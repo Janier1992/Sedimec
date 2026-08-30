@@ -1,0 +1,6 @@
+{
+  "name": "Sedimec - Control de Inventario, Entradas y Salidas",
+  "description": "Sistema empresarial para Sedimec: digitalización de recepción, entrega e inventario de piezas con comandos de voz, cálculo de existencias, auditoría y alertas.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

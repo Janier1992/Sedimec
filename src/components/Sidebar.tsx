@@ -6,10 +6,9 @@ import {
   History, 
   ArrowDownLeft, 
   ArrowUpRight, 
-  Mic, 
-  Sliders, 
-  Sparkles, 
-  ChevronLeft, 
+  Mic,
+  Sliders,
+  ChevronLeft,
   ChevronRight, 
   BellRing,
   PanelLeftClose,
@@ -293,22 +292,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
             )}
           </div>
-
-          {/* System & DB Status Badge */}
-          {showExpanded && (
-            <div className="p-3 bg-slate-950/60 rounded-2xl border border-slate-800/80 space-y-1.5">
-              <div className="flex items-center justify-between text-[11px] font-bold text-slate-300">
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                  Sistema Online
-                </span>
-                <span className="text-[10px] text-emerald-400 font-mono">v2.4.0</span>
-              </div>
-              <p className="text-[10px] text-slate-400 leading-tight">
-                Control dimensional estricto y auditoría RBAC activos.
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Footer Section: User Profile & Dedicated "Ocultar Menú" Option */}

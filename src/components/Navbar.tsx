@@ -16,8 +16,6 @@ import {
   Box, 
   Maximize2, 
   ChevronRight,
-  Sparkles,
-  Tag,
   Sun,
   Moon
 } from 'lucide-react';

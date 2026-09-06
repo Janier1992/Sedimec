@@ -1,18 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  X, 
-  Mic, 
-  Square, 
-  Sparkles, 
-  Volume2, 
-  VolumeX, 
-  Check, 
-  AlertTriangle, 
-  ArrowDownLeft, 
-  ArrowUpRight,
+import {
+  X,
+  Mic,
+  Square,
+  Volume2,
+  VolumeX,
+  Check,
+  AlertTriangle,
   RefreshCw,
-  Edit3,
-  Bot,
   HelpCircle
 } from 'lucide-react';
 import { ParsedVoiceMovement } from '../types';
@@ -111,7 +106,11 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
             console.error('Speech recognition error:', e);
             setIsRecording(false);
             setStep('idle');
-            setErrorMessage('No se pudo capturar audio por micrófono. Puedes seleccionar uno de los ejemplos directos para probar.');
+            setErrorMessage(
+              e?.error === 'not-allowed'
+                ? 'El navegador bloqueó el acceso al micrófono para este sitio. Haz clic en el ícono de candado 🔒 junto a la URL, cambia "Micrófono" a "Permitir" y recarga la página. Mientras tanto, puedes usar los ejemplos directos de abajo.'
+                : 'No se pudo capturar audio por micrófono. Puedes seleccionar uno de los ejemplos directos para probar.'
+            );
           };
           rec.onend = () => {
             setIsRecording(false);
@@ -122,7 +121,11 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
           console.error('SpeechRec error:', recErr);
         }
       }
-      setErrorMessage('No se pudo acceder al micrófono. Verifique los permisos del navegador o utilice los ejemplos directos a continuación.');
+      setErrorMessage(
+        (err as { name?: string })?.name === 'NotAllowedError'
+          ? 'El navegador bloqueó el acceso al micrófono para este sitio. Haz clic en el ícono de candado 🔒 junto a la URL, cambia "Micrófono" a "Permitir" y recarga la página. Mientras tanto, puedes usar los ejemplos directos de abajo.'
+          : 'No se pudo acceder al micrófono. Verifique los permisos del navegador o utilice los ejemplos directos a continuación.'
+      );
       setStep('idle');
     }
   };
@@ -223,14 +226,14 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
         <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-amber-500/20 text-amber-300 rounded-xl">
-              <Sparkles className="h-5 w-5 animate-pulse" />
+              <Mic className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                Asistente de Voz Inteligente Sedimec
+                Registrar por Voz
               </h2>
               <p className="text-xs text-amber-200/90">
-                Transcripción con gemini-3.5-transcribe + Estructuración IA
+                Dicta el movimiento y revisa los datos antes de guardar
               </p>
             </div>
           </div>
@@ -320,7 +323,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
                   Transcribiendo y Extrayendo Datos...
                 </h3>
                 <p className="text-xs text-slate-500 mt-1">
-                  Procesando con <span className="font-mono text-violet-700 font-bold">gemini-3.5-transcribe</span> y esquema JSON estructurado
+                  Esto toma unos segundos
                 </p>
               </div>
             </div>

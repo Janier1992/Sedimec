@@ -7,10 +7,8 @@ import {
   Plus, 
   ArrowDownLeft, 
   ArrowUpRight, 
-  Mic, 
-  X,
-  Sliders,
-  Sparkles
+  Mic,
+  X
 } from 'lucide-react';
 import { UserProfile } from '../types';
 

@@ -10,14 +10,10 @@ import {
   RotateCcw, 
   Mic, 
   Square, 
-  Maximize2, 
-  Minimize2, 
-  ChevronDown,
-  AlertTriangle,
+  Maximize2,
+  Minimize2,
   Package,
-  Layers,
-  HelpCircle,
-  Activity
+  HelpCircle
 } from 'lucide-react';
 import Markdown from 'react-markdown';
 import { askConversationalAgent, ChatMessage, generateTtsSpeech } from '../services/api';
@@ -220,6 +216,11 @@ export const ConversationalAgentWidget: React.FC<ConversationalAgentWidgetProps>
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error in chat:', event.error);
         setIsRecordingDictation(false);
+        if (event.error === 'not-allowed') {
+          alert(
+            'El navegador bloqueó el acceso al micrófono para este sitio. Haz clic en el ícono de candado 🔒 junto a la URL, cambia "Micrófono" a "Permitir" y recarga la página.'
+          );
+        }
       };
 
       recognition.onend = () => {
@@ -275,17 +276,12 @@ export const ConversationalAgentWidget: React.FC<ConversationalAgentWidgetProps>
                 <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-slate-950" />
               </div>
               <div>
-                <div className="flex items-center gap-1.5">
-                  <h3 className="text-sm font-extrabold text-white tracking-tight">
-                    Agente Sedimec IA
-                  </h3>
-                  <span className="text-[9px] font-mono px-1.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-md font-bold">
-                    Gemini IA
-                  </span>
-                </div>
+                <h3 className="text-sm font-extrabold text-white tracking-tight">
+                  Asistente Sedimec
+                </h3>
                 <p className="text-[10px] text-slate-400 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                  Sincronizado con inventario y movimientos
+                  Conectado al inventario en tiempo real
                 </p>
               </div>
             </div>
@@ -319,11 +315,11 @@ export const ConversationalAgentWidget: React.FC<ConversationalAgentWidgetProps>
           </div>
 
           {/* Live System Metrics Bar */}
-          <div className="px-3 py-1.5 bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 shrink-0 overflow-x-auto">
-            <div className="flex items-center gap-3 shrink-0">
+          {(liveMetrics.totalUnits !== undefined || liveMetrics.totalVolumeM3 !== undefined) && (
+            <div className="px-3 py-1.5 bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800/80 flex items-center gap-3 text-[11px] text-slate-600 dark:text-slate-400 shrink-0 overflow-x-auto">
               <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-semibold">
                 <Package className="w-3 h-3 text-amber-500" />
-                <span>Patio Activo</span>
+                <span>Patio</span>
               </span>
               {liveMetrics.totalUnits !== undefined && (
                 <span className="font-mono text-slate-800 dark:text-slate-200">
@@ -336,12 +332,7 @@ export const ConversationalAgentWidget: React.FC<ConversationalAgentWidgetProps>
                 </span>
               )}
             </div>
-
-            <div className="flex items-center gap-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
-              <Activity className="w-3 h-3" />
-              <span>Trazabilidad 100%</span>
-            </div>
-          </div>
+          )}
 
           {/* Chat Messages Body */}
           <div className="flex-1 p-4 overflow-y-auto space-y-3.5 bg-slate-100/70 dark:bg-slate-900/95">

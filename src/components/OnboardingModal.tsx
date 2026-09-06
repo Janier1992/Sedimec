@@ -91,12 +91,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           </p>
 
           <div className="bg-slate-900/90 border border-amber-500/30 rounded-xl p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
-                <Volume2 className="w-4 h-4" />
-                <span>Ejemplos listos para probar:</span>
-              </div>
-              <span className="text-[10px] text-amber-300/80 font-mono">gemini-3.5-transcribe</span>
+            <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
+              <Volume2 className="w-4 h-4" />
+              <span>Ejemplos listos para probar:</span>
             </div>
 
             <div className="space-y-2">

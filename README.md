@@ -71,7 +71,7 @@ scripts/    Scripts puntuales de administración (crear usuarios demo, etc.)
 
 ## 3. Crear el primer Administrador
 
-RLS exige un usuario autenticado real. Solo necesitas crear **uno** manualmente; desde ahí, el resto de usuarios (operadores, auditores, otros administradores) se crean directamente en la aplicación desde **Gestión de Usuarios** en el menú lateral (requiere estar logueado como admin).
+RLS exige un usuario autenticado real. Solo necesitas crear **uno** manualmente; desde ahí, el resto de administradores/auditores se crean desde **Gestión de Usuarios** en el menú lateral (requiere estar logueado como admin). Los operadores también pueden autorregistrarse desde la pantalla de login ("Regístrate aquí") — ver la limitación de correo en la sección [Limitaciones conocidas](#limitaciones-conocidas) antes de habilitar esto para usuarios reales.
 
 1. Ve a **Authentication → Users → Add user**, crea tu cuenta (marca **Auto Confirm User**).
 2. Todo usuario nuevo nace con rol `operador` por defecto. Promuévete a administrador en el **SQL Editor**:
@@ -111,6 +111,7 @@ npx supabase secrets set SMTP_HOST=smtp.tuproveedor.com SMTP_PORT=587 SMTP_USER=
 
 > Sin `GEMINI_API_KEY`, el dictado por voz usa un parser por reglas en español y el chat usa un motor de respuestas local — la app sigue siendo 100% funcional, solo sin IA generativa.
 > Sin `RESEND_API_KEY` ni `SMTP_*`, las alertas de stock bajo quedan registradas como "Simulado" en vez de enviarse de verdad.
+> Estos secrets **no** controlan el correo de confirmación de cuenta (ver [Limitaciones conocidas](#limitaciones-conocidas)) — ese es un sistema aparte, propio de Supabase Auth.
 
 ## 5. Configurar el frontend
 
@@ -179,6 +180,14 @@ Puntos clave del diseño (ver `supabase/schema_completo.sql` para el detalle):
 - **El rol del usuario lo resuelve el servidor** (tabla `profiles` + `auth.uid()`), nunca un valor que declare el cliente. Row Level Security aplica las reglas de negocio (admin/operador/auditor) directamente en Postgres, verificado con tests automatizados de RBAC.
 - **Los movimientos nunca se borran físicamente** — se anulan (soft-delete con `anulado_por`/`anulado_en`/`motivo_anulacion`) para preservar la trazabilidad de auditoría. Al eliminar un usuario, su historial se conserva (el nombre y rol quedan sellados como snapshot inmutable en cada movimiento).
 - **Las funciones de IA viven en Edge Functions**, el único lugar donde existe `GEMINI_API_KEY`. Cada una conserva su fallback local (parser por reglas, motor de chat local, síntesis de voz nativa del navegador) para que la app nunca deje de funcionar sin la key. La IA nunca escribe directo al inventario: siempre pasa por transcripción → extracción estructurada → revisión humana en el formulario → confirmación → persistencia.
+
+---
+
+## Limitaciones conocidas
+
+- **Correo de confirmación de cuenta (autorregistro) usa el remitente gratuito integrado de Supabase Auth.** Este remitente tiene un límite de frecuencia muy bajo (pensado por Supabase solo para pruebas, no para producción) y no se puede aumentar sin conectar un proveedor SMTP propio, sin importar el plan de Supabase. Con varios registros seguidos, los siguientes fallarán con "Se ha superado el límite de frecuencia de correo electrónico" hasta que el límite se reinicie.
+  - **Antes de usarlo con usuarios reales**, conecta un proveedor SMTP en el dashboard de Supabase: **Authentication → Emails → SMTP Settings** (distinto de los secrets `RESEND_API_KEY`/`SMTP_*` de arriba, que son solo para las alertas de stock bajo). Cualquier proveedor transaccional sirve (Resend, SendGrid, Amazon SES, Postmark, etc.); la mayoría tiene plan gratuito suficiente para un equipo pequeño.
+  - Mientras no se configure, el registro desde el login sigue siendo funcional para pruebas ocasionales, pero no es apto para altas de usuarios en producción.
 
 ---
 

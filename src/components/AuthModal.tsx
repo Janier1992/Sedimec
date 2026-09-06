@@ -220,6 +220,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
                         type="text"
                         required
                         autoFocus
+                        autoComplete="name"
                         value={nombre}
                         onChange={(e) => setNombre(e.target.value)}
                         placeholder="ej: Carlos Humberto Ruiz"
@@ -237,6 +238,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
                       type="email"
                       required
                       autoFocus={mode === 'login'}
+                      autoComplete="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="tu.correo@sedimec.com"
@@ -252,6 +254,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
                       type="password"
                       required
                       minLength={mode === 'signup' ? 6 : undefined}
+                      autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
@@ -269,6 +272,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
                         type="password"
                         required
                         minLength={6}
+                        autoComplete="new-password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="••••••••"

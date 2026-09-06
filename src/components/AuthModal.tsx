@@ -103,12 +103,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
       setSignupSentTo(email);
       resetFields();
     } catch (err: unknown) {
+      const code = (err as { code?: string } | null)?.code;
       const msg = err instanceof Error ? err.message : 'No se pudo crear la cuenta.';
-      setError(
-        /already registered|already exists/i.test(msg)
-          ? 'Ya existe una cuenta registrada con este correo. Inicia sesión en vez de registrarte.'
-          : msg
-      );
+      if (code === 'over_email_send_rate_limit') {
+        setError(
+          'Se alcanzó el límite temporal de correos de confirmación. Espera unos minutos e intenta de nuevo, o pide a un Administrador que te cree la cuenta directamente desde "Gestión de Usuarios" (no requiere correo).'
+        );
+      } else if (code === 'user_already_exists' || code === 'email_exists' || /already registered|already exists/i.test(msg)) {
+        setError('Ya existe una cuenta registrada con este correo. Inicia sesión en vez de registrarte.');
+      } else {
+        setError(msg);
+      }
     } finally {
       setIsSubmitting(false);
     }

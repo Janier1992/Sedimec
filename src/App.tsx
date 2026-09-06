@@ -3,8 +3,11 @@ import confetti from 'canvas-confetti';
 import {
   AlertCircle,
   CheckCircle2,
-  PanelLeftOpen
+  PanelLeftOpen,
+  Sun,
+  Moon
 } from 'lucide-react';
+import { useTheme } from './context/ThemeContext';
 import {
   Movimiento,
   ItemInventario,
@@ -41,6 +44,8 @@ import { OnboardingModal } from './components/OnboardingModal';
 import { ConversationalAgentWidget } from './components/ConversationalAgentWidget';
 
 export default function App() {
+  const { isDark, toggleTheme } = useTheme();
+
   // Auth / session state (Supabase Auth es la única fuente de verdad del usuario y su rol)
   const [session, setSession] = useState<import('@supabase/supabase-js').Session | null>(null);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
@@ -359,7 +364,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
         <div className="max-w-sm w-full bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 text-center space-y-4">
-          <div className="p-3 bg-rose-100 text-rose-600 rounded-2xl inline-flex mx-auto">
+          <div className="p-3 bg-rose-100 dark:bg-rose-950/60 text-rose-600 rounded-2xl inline-flex mx-auto">
             <AlertCircle className="h-7 w-7" />
           </div>
           <div>
@@ -379,7 +384,16 @@ export default function App() {
 
   if (!session || !currentUser) {
     return (
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors relative">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          title={isDark ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
+          aria-label={isDark ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
+          className="absolute top-4 right-4 z-10 p-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-xl transition-all cursor-pointer shadow-xs active:scale-95"
+        >
+          {isDark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-700" />}
+        </button>
         <AuthModal isOpen onClose={() => {}} currentUser={null} />
       </div>
     );
@@ -458,7 +472,7 @@ export default function App() {
             </div>
           ) : dataLoadError && !kpis ? (
             <div className="py-24 flex flex-col items-center justify-center space-y-4 text-center max-w-md mx-auto">
-              <div className="p-3 bg-rose-100 text-rose-600 rounded-2xl">
+              <div className="p-3 bg-rose-100 dark:bg-rose-950/60 text-rose-600 rounded-2xl">
                 <AlertCircle className="h-8 w-8" />
               </div>
               <div>

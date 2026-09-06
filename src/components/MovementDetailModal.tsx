@@ -54,7 +54,7 @@ export const MovementDetailModal: React.FC<MovementDetailModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 print:p-0 print:bg-white">
-      <div className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 print:border-none print:shadow-none">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 print:border-none print:shadow-none">
         
         {/* Header */}
         <div className="px-5 sm:px-6 py-4 bg-slate-900 text-white flex items-center justify-between print:bg-slate-900 print:text-white shrink-0">
@@ -111,67 +111,67 @@ export const MovementDetailModal: React.FC<MovementDetailModalProps> = ({
         {/* Modal Body */}
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1">
           {/* Piece Overview Box */}
-          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-800">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Información de la Pieza
               </span>
-              <span className="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-800 rounded-full">
+              <span className="text-xs font-semibold px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-full">
                 Estado: {movement.estadoEquipo}
               </span>
             </div>
-            <h3 className="text-lg font-extrabold text-slate-900">{movement.claseEquipo}</h3>
-            <p className="text-xs text-slate-600">Categoría: {movement.tipoEquipo}</p>
+            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">{movement.claseEquipo}</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400">Categoría: {movement.tipoEquipo}</p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-200/80 text-xs">
               <div>
                 <span className="text-[10px] text-slate-400 font-semibold block">Ancho</span>
-                <span className="font-mono font-bold text-slate-800">{movement.ancho} cm</span>
+                <span className="font-mono font-bold text-slate-800 dark:text-slate-100">{movement.ancho} cm</span>
               </div>
               <div>
                 <span className="text-[10px] text-slate-400 font-semibold block">Largo</span>
-                <span className="font-mono font-bold text-slate-800">{movement.largo} cm</span>
+                <span className="font-mono font-bold text-slate-800 dark:text-slate-100">{movement.largo} cm</span>
               </div>
               <div>
                 <span className="text-[10px] text-slate-400 font-semibold block">Profundidad</span>
-                <span className="font-mono font-bold text-slate-800">{movement.profundidad} cm</span>
+                <span className="font-mono font-bold text-slate-800 dark:text-slate-100">{movement.profundidad} cm</span>
               </div>
               <div>
                 <span className="text-[10px] text-slate-400 font-semibold block">Cantidad</span>
-                <span className="font-mono font-black text-amber-700 text-sm">{movement.cantidad} und</span>
+                <span className="font-mono font-black text-amber-700 dark:text-amber-400 text-sm">{movement.cantidad} und</span>
               </div>
             </div>
           </div>
 
           {/* Logistic & Responsible Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5 text-amber-600" />
                 {isEntrada ? 'Procedencia (Origen / Proveedor)' : 'Destino (Cliente / Obra)'}
               </span>
-              <div className="font-bold text-slate-900">{movement.procedenciaDestino}</div>
+              <div className="font-bold text-slate-900 dark:text-white">{movement.procedenciaDestino}</div>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
                 <User className="h-3.5 w-3.5 text-amber-600" />
                 Responsable del Traslado / Conductor
               </span>
-              <div className="font-bold text-slate-900">{movement.responsable}</div>
-              <div className="text-[11px] text-slate-500 font-mono">{movement.contactoResponsable || 'Sin contacto'}</div>
+              <div className="font-bold text-slate-900 dark:text-white">{movement.responsable}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">{movement.contactoResponsable || 'Sin contacto'}</div>
             </div>
           </div>
 
           {/* Volume & Balance */}
           <div className="p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 flex items-center justify-between text-xs">
             <div>
-              <span className="text-[10px] text-indigo-700 font-bold uppercase">Cubicaje Calculado</span>
+              <span className="text-[10px] text-indigo-700 dark:text-indigo-400 font-bold uppercase">Cubicaje Calculado</span>
               <div className="font-mono font-extrabold text-indigo-950">{volumenM3.toFixed(4)} m³</div>
             </div>
             {movement.saldoResultante !== undefined && (
               <div className="text-right">
-                <span className="text-[10px] text-indigo-700 font-bold uppercase">Saldo Resultante</span>
+                <span className="text-[10px] text-indigo-700 dark:text-indigo-400 font-bold uppercase">Saldo Resultante</span>
                 <div className="font-mono font-extrabold text-indigo-950">{movement.saldoResultante} unidades</div>
               </div>
             )}
@@ -179,16 +179,16 @@ export const MovementDetailModal: React.FC<MovementDetailModalProps> = ({
 
           {/* Observations */}
           {movement.observaciones && (
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
               <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
                 Observaciones y Notas de Remisión
               </span>
-              <p className="text-slate-800 italic">{movement.observaciones}</p>
+              <p className="text-slate-800 dark:text-slate-100 italic">{movement.observaciones}</p>
             </div>
           )}
 
           {/* Audit Footer */}
-          <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
             <span>Registrado por: {movement.creadoPor?.nombre || 'Sistema'}</span>
             <span>{new Date(movement.fecha).toLocaleString('es-CO')}</span>
           </div>

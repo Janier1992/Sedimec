@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+/* Modo oscuro controlado por la clase .dark en <html> (ThemeContext.tsx),
+   no por la preferencia del sistema operativo -- sin esto, el interruptor
+   de tema de la aplicacion no tiene ningun efecto en Tailwind v4. */
+@custom-variant dark (&:where(.dark, .dark *));

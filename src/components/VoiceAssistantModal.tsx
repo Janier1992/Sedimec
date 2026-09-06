@@ -220,7 +220,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
         <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between shrink-0">
@@ -250,7 +250,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
         <div className="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1">
           {/* Error Banner */}
           {errorMessage && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-semibold flex items-center gap-2">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl text-rose-700 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 shrink-0 text-rose-600" />
               <span>{errorMessage}</span>
             </div>
@@ -277,7 +277,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
                 </button>
 
                 <div className="mt-4">
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     {isRecording ? `Grabando audio... ${recordingSeconds}s` : 'Presione para hablar'}
                   </span>
                   <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
@@ -289,7 +289,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
               </div>
 
               {/* Sample Quick Voice Prompts */}
-              <div className="pt-4 border-t border-slate-100 text-left">
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 text-left">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1 mb-2">
                   <HelpCircle className="h-3.5 w-3.5" />
                   O pruebe con estos ejemplos con 1 clic:
@@ -299,7 +299,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
                     <button
                       key={idx}
                       onClick={() => processDirectText(prompt)}
-                      className="w-full text-left p-2 bg-slate-50 hover:bg-violet-50 hover:border-violet-200 border border-slate-200 rounded-xl text-xs text-slate-700 font-medium transition-all cursor-pointer truncate"
+                      className="w-full text-left p-2 bg-slate-50 dark:bg-slate-800/60 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:border-violet-200 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-300 font-medium transition-all cursor-pointer truncate"
                     >
                       <span className="text-violet-600 font-bold mr-1.5">Ej {idx + 1}:</span>
                       "{prompt}"
@@ -314,15 +314,15 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
           {step === 'processing' && (
             <div className="py-12 text-center space-y-4">
               <div className="relative inline-flex">
-                <div className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 animate-spin">
+                <div className="w-16 h-16 rounded-full bg-violet-100 dark:bg-violet-950/60 flex items-center justify-center text-violet-600 dark:text-violet-400 animate-spin">
                   <RefreshCw className="h-8 w-8" />
                 </div>
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   Transcribiendo y Extrayendo Datos...
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Esto toma unos segundos
                 </p>
               </div>
@@ -338,55 +338,55 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
                   <span>Transcripción de Voz:</span>
                   <button
                     onClick={() => handlePlayTts(rawTranscript)}
-                    className="flex items-center gap-1 text-violet-700 hover:text-violet-900 cursor-pointer"
+                    className="flex items-center gap-1 text-violet-700 dark:text-violet-400 hover:text-violet-900 cursor-pointer"
                   >
                     <Volume2 className="h-3.5 w-3.5" />
                     <span>Escuchar</span>
                   </button>
                 </div>
-                <p className="text-xs text-slate-800 italic">"{rawTranscript}"</p>
+                <p className="text-xs text-slate-800 dark:text-slate-100 italic">"{rawTranscript}"</p>
               </div>
 
               {/* Parsed Attributes Card */}
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase ${
                         parsedData.tipoMovimiento === 'Entrada'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-sky-100 text-sky-800'
+                          ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                          : 'bg-sky-100 dark:bg-sky-950/60 text-sky-800'
                       }`}
                     >
                       {parsedData.tipoMovimiento}
                     </span>
-                    <span className="text-xs font-bold text-slate-900">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">
                       {parsedData.claseEquipo} ({parsedData.tipoEquipo})
                     </span>
                   </div>
-                  <span className="text-xs font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded-lg">
+                  <span className="text-xs font-black text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded-lg">
                     {parsedData.cantidad} unidades
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs text-slate-700">
-                  <div className="p-2 bg-white rounded-lg border border-slate-200">
+                <div className="grid grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
+                  <div className="p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
                     <span className="text-[10px] text-slate-400 block font-semibold">Dimensiones</span>
                     <span className="font-mono font-bold">
                       {parsedData.ancho} × {parsedData.largo} × {parsedData.profundidad} cm
                     </span>
                   </div>
-                  <div className="p-2 bg-white rounded-lg border border-slate-200">
+                  <div className="p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
                     <span className="text-[10px] text-slate-400 block font-semibold">Estado</span>
                     <span className="font-bold">{parsedData.estadoEquipo}</span>
                   </div>
-                  <div className="p-2 bg-white rounded-lg border border-slate-200">
+                  <div className="p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
                     <span className="text-[10px] text-slate-400 block font-semibold">
                       {parsedData.tipoMovimiento === 'Entrada' ? 'Procedencia' : 'Destino'}
                     </span>
                     <span className="font-bold truncate block">{parsedData.procedenciaDestino}</span>
                   </div>
-                  <div className="p-2 bg-white rounded-lg border border-slate-200">
+                  <div className="p-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
                     <span className="text-[10px] text-slate-400 block font-semibold">Responsable</span>
                     <span className="font-bold truncate block">{parsedData.responsable}</span>
                   </div>
@@ -398,7 +398,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all cursor-pointer"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all cursor-pointer"
                 >
                   Dictar de nuevo
                 </button>

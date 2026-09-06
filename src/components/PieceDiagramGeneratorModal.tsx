@@ -83,7 +83,7 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
         <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between shrink-0">
@@ -113,13 +113,13 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1">
           {/* Piece Context Badge */}
           {pieceInfo && (
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <Box className="h-4 w-4 text-amber-600" />
-                <span className="font-bold text-slate-900">{pieceInfo.claseEquipo}</span>
-                <span className="text-slate-500">({pieceInfo.tipoEquipo})</span>
+                <span className="font-bold text-slate-900 dark:text-white">{pieceInfo.claseEquipo}</span>
+                <span className="text-slate-500 dark:text-slate-400">({pieceInfo.tipoEquipo})</span>
               </div>
-              <div className="font-mono text-slate-600">
+              <div className="font-mono text-slate-600 dark:text-slate-400">
                 {pieceInfo.ancho} × {pieceInfo.largo} × {pieceInfo.profundidad} cm
               </div>
             </div>
@@ -127,7 +127,7 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
 
           {/* Aspect Ratio Selector (Required Feature) */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-700">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
               Seleccionar Proporción de Imagen (Aspect Ratio)
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -141,7 +141,7 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
                     className={`py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border transition-all cursor-pointer ${
                       isSelected
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                        : 'bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span>{ratio.icon}</span>
@@ -154,7 +154,7 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
 
           {/* Custom Prompt Override */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               Instrucciones adicionales para el plano (Opcional)
             </label>
             <input
@@ -162,13 +162,13 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
               placeholder="ej: Vista isométrica con cotas y acabado galvanizado industrial..."
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 transition-all"
             />
           </div>
 
           {/* Error Notice */}
           {errorMsg && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-semibold">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl text-xs text-rose-700 dark:text-rose-400 font-semibold">
               {errorMsg}
             </div>
           )}
@@ -176,7 +176,7 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
           {/* Generated Image Result Display */}
           {generatedImage && (
             <div className="space-y-2">
-              <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-900 max-h-72 flex items-center justify-center">
+              <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-900 max-h-72 flex items-center justify-center">
                 <img
                   src={generatedImage}
                   alt="Plano técnico generado"
@@ -202,11 +202,11 @@ export const PieceDiagramGeneratorModal: React.FC<PieceDiagramGeneratorModalProp
           )}
 
           {/* Action Footer */}
-          <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-3">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
             >
               Cerrar
             </button>

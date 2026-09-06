@@ -86,17 +86,17 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
   return (
     <div className="space-y-4 sm:space-y-5 pb-8">
       {/* ── HEADER & ACCIONES DE AUDITORÍA ── */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-slate-100 text-slate-800 rounded-xl shrink-0">
+            <div className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl shrink-0">
               <History className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Libro de Movimientos y Trazabilidad
               </h1>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Registro cronológico inmutable de recepciones y despachos con comprobantes de entrega.
               </p>
             </div>
@@ -114,7 +114,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
           </button>
           <button
             onClick={() => exportarMovimientosExcel(filteredMovements, 'csv', 'Sedimec_Movimientos')}
-            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            className="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
             CSV
           </button>
@@ -122,7 +122,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
       </div>
 
       {/* ── PANEL DE BÚSQUEDA Y FILTROS ── */}
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
           {/* Búsqueda */}
           <div className="relative">
@@ -135,7 +135,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 focus:bg-white transition-colors"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 focus:bg-white dark:focus:bg-slate-900 transition-colors"
             />
           </div>
 
@@ -147,7 +147,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 setSelectedTipo(e.target.value as 'todos' | 'Entrada' | 'Salida');
                 setCurrentPage(1);
               }}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-hidden focus:border-amber-500 focus:bg-white transition-colors cursor-pointer"
+              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 focus:outline-hidden focus:border-amber-500 focus:bg-white dark:focus:bg-slate-900 transition-colors cursor-pointer"
             >
               <option value="todos">Todos los Movimientos</option>
               <option value="Entrada">Solo Recepciones (+)</option>
@@ -165,7 +165,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 setCurrentPage(1);
               }}
               title="Fecha inicial"
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-hidden focus:border-amber-500 focus:bg-white transition-colors"
+              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-hidden focus:border-amber-500 focus:bg-white dark:focus:bg-slate-900 transition-colors"
             />
           </div>
 
@@ -179,14 +179,14 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 setCurrentPage(1);
               }}
               title="Fecha final"
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-hidden focus:border-amber-500 focus:bg-white transition-colors"
+              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-hidden focus:border-amber-500 focus:bg-white dark:focus:bg-slate-900 transition-colors"
             />
           </div>
         </div>
 
         {/* Resumen de filtros */}
         {(searchTerm || selectedTipo !== 'todos' || fechaDesde || fechaHasta) && (
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>
               Encontrados <strong>{filteredMovements.length}</strong> movimientos
             </span>
@@ -199,7 +199,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 setSelectedResponsable('todos');
                 setCurrentPage(1);
               }}
-              className="text-slate-700 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-slate-700 dark:text-slate-300 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" />
               <span>Limpiar filtros</span>
@@ -210,9 +210,9 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
 
       {/* ── TABLA DE MOVIMIENTOS ── */}
       {paginatedMovements.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-10 text-center text-slate-500 space-y-2">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs p-10 text-center text-slate-500 dark:text-slate-400 space-y-2">
           <History className="h-10 w-10 text-slate-400 mx-auto" />
-          <p className="text-sm font-semibold text-slate-700">No se encontraron movimientos con los filtros indicados</p>
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No se encontraron movimientos con los filtros indicados</p>
         </div>
       ) : (
         <>
@@ -225,46 +225,46 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 <div
                   key={`mobile-mov-${mov.id}`}
                   onClick={() => onSelectMovement(mov)}
-                  className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs space-y-2.5 cursor-pointer hover:border-slate-300 transition-colors"
+                  className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-xs space-y-2.5 cursor-pointer hover:border-slate-300 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span
                         className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                          isEntrada ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800'
+                          isEntrada ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300' : 'bg-sky-100 dark:bg-sky-950/60 text-sky-800'
                         }`}
                       >
                         {mov.tipoMovimiento}
                       </span>
-                      <span className="font-mono text-xs font-semibold text-slate-800">{mov.codigoLote}</span>
+                      <span className="font-mono text-xs font-semibold text-slate-800 dark:text-slate-100">{mov.codigoLote}</span>
                     </div>
 
                     <span className={`text-xs font-bold font-mono ${
-                      isEntrada ? 'text-emerald-800' : 'text-sky-800'
+                      isEntrada ? 'text-emerald-800 dark:text-emerald-300' : 'text-sky-800'
                     }`}>
                       {isEntrada ? `+${mov.cantidad}` : `-${mov.cantidad}`} und
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-xs text-slate-900 truncate">{mov.claseEquipo}</h3>
-                    <p className="text-[11px] text-slate-500 font-mono">
+                    <h3 className="font-bold text-xs text-slate-900 dark:text-white truncate">{mov.claseEquipo}</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
                       {mov.ancho} × {mov.largo} × {mov.profundidad} cm
                     </p>
                   </div>
 
-                  <div className="bg-slate-50 rounded-lg p-2 space-y-1 text-xs text-slate-600">
+                  <div className="bg-slate-50 dark:bg-slate-800/60 rounded-lg p-2 space-y-1 text-xs text-slate-600 dark:text-slate-400">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-400">{isEntrada ? 'Procedencia:' : 'Destino:'}</span>
-                      <span className="font-medium text-slate-800 truncate max-w-[200px]">{mov.procedenciaDestino}</span>
+                      <span className="font-medium text-slate-800 dark:text-slate-100 truncate max-w-[200px]">{mov.procedenciaDestino}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-slate-400">Responsable:</span>
-                      <span className="text-slate-700 truncate max-w-[200px]">{mov.responsable}</span>
+                      <span className="text-slate-700 dark:text-slate-300 truncate max-w-[200px]">{mov.responsable}</span>
                     </div>
-                    <div className="flex items-center justify-between border-t border-slate-200/60 pt-1 text-[11px]">
+                    <div className="flex items-center justify-between border-t border-slate-200/60 dark:border-slate-800/60 pt-1 text-[11px]">
                       <span className="text-slate-400">Fecha:</span>
-                      <span className="text-slate-500 font-mono">
+                      <span className="text-slate-500 dark:text-slate-400 font-mono">
                         {new Date(mov.fecha).toLocaleDateString('es-CO', {
                           day: '2-digit',
                           month: 'short',
@@ -280,11 +280,11 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
           </div>
 
           {/* Tabla de escritorio */}
-          <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                  <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                     <th className="py-3 px-4">Remisión / Fecha</th>
                     <th className="py-3 px-3">Tipo</th>
                     <th className="py-3 px-3">Pieza / Equipo</th>
@@ -295,18 +295,18 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                     <th className="py-3 px-4 text-right">Comprobante</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs text-slate-700 dark:text-slate-300">
                   {paginatedMovements.map((mov) => {
                     const isEntrada = mov.tipoMovimiento === 'Entrada';
 
                     return (
                       <tr 
                         key={mov.id}
-                        className="hover:bg-slate-50 transition-colors"
+                        className="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
                       >
                         {/* Lote & Fecha */}
                         <td className="py-3 px-4 font-mono">
-                          <div className="font-bold text-slate-900">{mov.codigoLote}</div>
+                          <div className="font-bold text-slate-900 dark:text-white">{mov.codigoLote}</div>
                           <div className="text-[10px] text-slate-400">
                             {new Date(mov.fecha).toLocaleDateString('es-CO', {
                               year: 'numeric',
@@ -322,7 +322,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                         <td className="py-3 px-3">
                           <span
                             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                              isEntrada ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800'
+                              isEntrada ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300' : 'bg-sky-100 dark:bg-sky-950/60 text-sky-800'
                             }`}
                           >
                             {isEntrada ? (
@@ -335,13 +335,13 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                         </td>
 
                         {/* Pieza */}
-                        <td className="py-3 px-3 font-semibold text-slate-900">
+                        <td className="py-3 px-3 font-semibold text-slate-900 dark:text-white">
                           <div>{mov.claseEquipo}</div>
                           <div className="text-[10px] text-slate-400 font-normal">{mov.tipoEquipo}</div>
                         </td>
 
                         {/* Dimensiones */}
-                        <td className="py-3 px-3 font-mono text-[11px] text-slate-700">
+                        <td className="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-slate-300">
                           {mov.ancho} × {mov.largo} × {mov.profundidad} cm
                         </td>
 
@@ -349,7 +349,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                         <td className="py-3 px-3 text-center">
                           <span
                             className={`font-mono font-bold text-xs ${
-                              isEntrada ? 'text-emerald-800' : 'text-sky-800'
+                              isEntrada ? 'text-emerald-800 dark:text-emerald-300' : 'text-sky-800'
                             }`}
                           >
                             {isEntrada ? `+${mov.cantidad}` : `-${mov.cantidad}`}
@@ -358,14 +358,14 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
 
                         {/* Procedencia / Destino */}
                         <td className="py-3 px-3 max-w-[180px]">
-                          <div className="truncate font-medium text-slate-800" title={mov.procedenciaDestino}>
+                          <div className="truncate font-medium text-slate-800 dark:text-slate-100" title={mov.procedenciaDestino}>
                             {mov.procedenciaDestino}
                           </div>
                         </td>
 
                         {/* Responsable */}
                         <td className="py-3 px-3 max-w-[150px]">
-                          <div className="truncate text-slate-700" title={mov.responsable}>
+                          <div className="truncate text-slate-700 dark:text-slate-300" title={mov.responsable}>
                             {mov.responsable}
                           </div>
                         </td>
@@ -376,7 +376,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                             <button
                               onClick={() => onSelectMovement(mov)}
                               title="Ver comprobante de remisión y detalle técnico"
-                              className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-medium transition-colors cursor-pointer flex items-center gap-1"
+                              className="px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded text-xs font-medium transition-colors cursor-pointer flex items-center gap-1"
                             >
                               <Eye className="h-3.5 w-3.5" />
                               <span>Voucher</span>
@@ -390,7 +390,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                                   }
                                 }}
                                 title="Anular registro (Solo Admin)"
-                                className="px-2 py-1 bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded text-xs font-medium transition-colors cursor-pointer flex items-center gap-1"
+                                className="px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-500 dark:text-slate-400 hover:text-rose-600 rounded text-xs font-medium transition-colors cursor-pointer flex items-center gap-1"
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
                                 <span>Anular</span>
@@ -408,7 +408,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
 
           {/* Paginador */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs text-xs text-slate-600">
+            <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs text-xs text-slate-600 dark:text-slate-400">
               <div>
                 Página <strong>{currentPage}</strong> de <strong>{totalPages}</strong> ({filteredMovements.length} movimientos)
               </div>
@@ -416,7 +416,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  className="p-1.5 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
@@ -434,7 +434,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                         className={`h-7 w-7 rounded-lg font-bold transition-colors cursor-pointer ${
                           currentPage === pageNum
                             ? 'bg-slate-900 text-white'
-                            : 'hover:bg-slate-100 text-slate-700'
+                            : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
                         }`}
                       >
                         {pageNum}
@@ -445,7 +445,7 @@ export const MovementsHistoryView: React.FC<MovementsHistoryViewProps> = ({
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  className="p-1.5 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>

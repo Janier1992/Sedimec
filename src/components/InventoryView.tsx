@@ -118,18 +118,18 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   return (
     <div className="space-y-4 sm:space-y-5 pb-8">
       {/* ── HEADER Y ACCIONES PRINCIPALES ── */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-slate-100 text-slate-800 rounded-xl shrink-0">
+            <div className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl shrink-0">
               <Layers className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Consolidado de Inventario en Patio
               </h1>
-              <p className="text-xs text-slate-500">
-                Saldos disponibles calculados por fórmula estricta: <span className="font-mono font-medium text-slate-800">Saldo = Recepciones - Despachos</span>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Saldos disponibles calculados por fórmula estricta: <span className="font-mono font-medium text-slate-800 dark:text-slate-100">Saldo = Recepciones - Despachos</span>
               </p>
             </div>
           </div>
@@ -145,7 +145,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
           </button>
           <button
             onClick={() => exportarInventarioConsolidadoExcel(filteredItems, 'csv')}
-            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            className="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
             CSV
           </button>
@@ -154,24 +154,24 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
       {/* ── 4 RESÚMENES MÉTRICOS ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Unidades en Stock</span>
-          <div className="text-2xl font-bold font-mono text-slate-900 mt-1">{totalStockFiltrado}</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Unidades en Stock</span>
+          <div className="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">{totalStockFiltrado}</div>
           <span className="text-[11px] text-slate-400">Piezas disponibles en patio</span>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Referencias Activas</span>
-          <div className="text-2xl font-bold font-mono text-slate-900 mt-1">{filteredItems.length}</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Referencias Activas</span>
+          <div className="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">{filteredItems.length}</div>
           <span className="text-[11px] text-slate-400">Tipos de piezas catalogadas</span>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Cubicaje Total</span>
-          <div className="text-2xl font-bold font-mono text-slate-900 mt-1">{totalVolumenFiltrado.toFixed(3)} <span className="text-xs font-normal text-slate-500">m³</span></div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Cubicaje Total</span>
+          <div className="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">{totalVolumenFiltrado.toFixed(3)} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">m³</span></div>
           <span className="text-[11px] text-slate-400">Volumen físico ocupado</span>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Stock Crítico</span>
-          <div className={`text-2xl font-bold font-mono mt-1 ${lowStockCount > 0 ? 'text-rose-700' : 'text-slate-900'}`}>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Stock Crítico</span>
+          <div className={`text-2xl font-bold font-mono mt-1 ${lowStockCount > 0 ? 'text-rose-700 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
             {lowStockCount}
           </div>
           <span className="text-[11px] text-slate-400">Bajo el umbral mínimo (≤5)</span>
@@ -179,7 +179,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
       </div>
 
       {/* ── BARRA DE FILTROS ── */}
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
           
           {/* Buscador */}
@@ -190,7 +190,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               placeholder="Buscar clase, ID, medidas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 focus:bg-white transition-colors"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 focus:bg-white dark:focus:bg-slate-900 transition-colors"
             />
           </div>
 
@@ -199,7 +199,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
             <select
               value={selectedTipo}
               onChange={(e) => setSelectedTipo(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-hidden focus:border-amber-500 focus:bg-white transition-colors cursor-pointer"
+              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 focus:outline-hidden focus:border-amber-500 focus:bg-white dark:focus:bg-slate-900 transition-colors cursor-pointer"
             >
               <option value="todos">Todos los Tipos ({uniqueTipos.length})</option>
               {uniqueTipos.map((t) => (
@@ -215,7 +215,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
             <select
               value={selectedEstado}
               onChange={(e) => setSelectedEstado(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-hidden focus:border-amber-500 focus:bg-white transition-colors cursor-pointer"
+              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 focus:outline-hidden focus:border-amber-500 focus:bg-white dark:focus:bg-slate-900 transition-colors cursor-pointer"
             >
               <option value="todos">Todos los Estados ({uniqueEstados.length})</option>
               {uniqueEstados.map((e) => (
@@ -233,8 +233,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               onClick={() => setFilterStockBajo(!filterStockBajo)}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${
                 filterStockBajo
-                  ? 'bg-rose-50 border-rose-200 text-rose-800'
-                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                  ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300'
+                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               <span className="flex items-center gap-1.5">
@@ -253,7 +253,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
         {/* Resumen de filtros aplicados */}
         {(searchTerm || selectedTipo !== 'todos' || selectedEstado !== 'todos' || filterStockBajo) && (
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>
               Mostrando <strong>{filteredItems.length}</strong> de <strong>{items.length}</strong> referencias
             </span>
@@ -264,7 +264,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                 setSelectedEstado('todos');
                 setFilterStockBajo(false);
               }}
-              className="text-slate-700 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-slate-700 dark:text-slate-300 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" />
               <span>Limpiar filtros</span>
@@ -275,9 +275,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
       {/* ── TABLA CONSOLIDADA DE INVENTARIO ── */}
       {filteredItems.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-10 text-center text-slate-500 space-y-2">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs p-10 text-center text-slate-500 dark:text-slate-400 space-y-2">
           <Box className="h-10 w-10 text-slate-400 mx-auto" />
-          <p className="text-sm font-semibold text-slate-700">No se encontraron piezas con los filtros seleccionados</p>
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No se encontraron piezas con los filtros seleccionados</p>
           <button
             onClick={() => {
               setSearchTerm('');
@@ -301,15 +301,15 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               return (
                 <div 
                   key={item.id}
-                  className="p-4 bg-white rounded-xl border border-slate-200 shadow-xs space-y-3"
+                  className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <span className="text-[10px] font-semibold px-2 py-0.5 bg-slate-100 text-slate-700 rounded">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded">
                         {item.tipoEquipo}
                       </span>
-                      <h3 className="text-sm font-bold text-slate-900 mt-1 truncate">{item.claseEquipo}</h3>
-                      <p className="text-[11px] font-mono text-slate-500">
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-1 truncate">{item.claseEquipo}</h3>
+                      <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
                         {item.ancho} × {item.largo} × {item.profundidad} cm
                       </p>
                     </div>
@@ -317,31 +317,31 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                     <div className="text-right shrink-0">
                       <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold font-mono ${
                         isUnderThreshold
-                          ? 'bg-rose-100 text-rose-800'
+                          ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300'
                           : isZero
-                          ? 'bg-slate-200 text-slate-700'
-                          : 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                          : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                       }`}>
                         {item.saldoActual} und
                       </span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 p-2 bg-slate-50 rounded-lg text-xs">
+                  <div className="grid grid-cols-2 gap-2 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-lg text-xs">
                     <div>
-                      <span className="text-slate-500 block text-[10px] uppercase font-medium">Movimientos</span>
-                      <span className="font-mono font-bold text-slate-700">+{item.totalEntradas} / -{item.totalSalidas}</span>
+                      <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-medium">Movimientos</span>
+                      <span className="font-mono font-bold text-slate-700 dark:text-slate-300">+{item.totalEntradas} / -{item.totalSalidas}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block text-[10px] uppercase font-medium">Cubicaje Total</span>
-                      <span className="font-mono font-bold text-slate-700">{item.volumenTotalM3.toFixed(3)} m³</span>
+                      <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-medium">Cubicaje Total</span>
+                      <span className="font-mono font-bold text-slate-700 dark:text-slate-300">{item.volumenTotalM3.toFixed(3)} m³</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 pt-1">
                     <button
                       onClick={() => onOpenDiagramModal(item)}
-                      className="flex-1 py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                      className="flex-1 py-1.5 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-lg text-xs font-medium transition-colors cursor-pointer"
                     >
                       Plano 3D
                     </button>
@@ -357,14 +357,14 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         <button
                           onClick={() => { setEditingItem(item); setEditUmbral(String(item.umbralMinimo)); }}
                           title="Editar umbral mínimo de esta referencia"
-                          className="py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                          className="py-1.5 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 rounded-lg text-xs font-medium transition-colors cursor-pointer"
                         >
                           <Pencil className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={() => onDeleteReference(item)}
                           title="Eliminar referencia (anula todo su historial)"
-                          className="py-1.5 px-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                          className="py-1.5 px-3 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-medium transition-colors cursor-pointer"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -377,11 +377,11 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
           </div>
 
           {/* Tabla de escritorio */}
-          <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                  <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                     <th className="py-3 px-4">Pieza / Clase de Equipo</th>
                     <th className="py-3 px-3">Tipo</th>
                     <th className="py-3 px-3">Dimensiones (cm)</th>
@@ -393,7 +393,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                     <th className="py-3 px-4 text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs text-slate-700 dark:text-slate-300">
                   {filteredItems.map((item) => {
                     const isUnderThreshold = item.alertaStockBajo;
                     const isZero = item.saldoActual === 0;
@@ -401,11 +401,11 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                     return (
                       <tr 
                         key={item.id}
-                        className={`hover:bg-slate-50 transition-colors ${
-                          isUnderThreshold ? 'bg-rose-50/30' : isZero ? 'bg-slate-50/50 opacity-60' : ''
+                        className={`hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors ${
+                          isUnderThreshold ? 'bg-rose-50/30 dark:bg-rose-950/20' : isZero ? 'bg-slate-50/50 opacity-60' : ''
                         }`}
                       >
-                        <td className="py-3 px-4 font-semibold text-slate-900">
+                        <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">
                           <div>{item.claseEquipo}</div>
                           <div className="text-[10px] text-slate-400 font-normal font-mono">
                             ID: {item.id.replace(/__/g, '-').slice(0, 20)}
@@ -413,12 +413,12 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         </td>
 
                         <td className="py-3 px-3">
-                          <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-medium rounded text-[11px]">
+                          <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium rounded text-[11px]">
                             {item.tipoEquipo}
                           </span>
                         </td>
 
-                        <td className="py-3 px-3 font-mono text-slate-800">
+                        <td className="py-3 px-3 font-mono text-slate-800 dark:text-slate-100">
                           {item.ancho} × {item.largo} × {item.profundidad}
                         </td>
 
@@ -426,21 +426,21 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                           <span
                             className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold ${
                               item.estadoEquipo === 'Bueno' || item.estadoEquipo === 'Nuevo'
-                                ? 'bg-emerald-100 text-emerald-800'
+                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                                 : item.estadoEquipo === 'Regular'
-                                ? 'bg-amber-100 text-amber-800'
-                                : 'bg-rose-100 text-rose-800'
+                                ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800'
+                                : 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300'
                             }`}
                           >
                             {item.estadoEquipo}
                           </span>
                         </td>
 
-                        <td className="py-3 px-3 text-center font-bold font-mono text-emerald-700">
+                        <td className="py-3 px-3 text-center font-bold font-mono text-emerald-700 dark:text-emerald-400">
                           +{item.totalEntradas}
                         </td>
 
-                        <td className="py-3 px-3 text-center font-bold font-mono text-sky-700">
+                        <td className="py-3 px-3 text-center font-bold font-mono text-sky-700 dark:text-sky-400">
                           -{item.totalSalidas}
                         </td>
 
@@ -448,17 +448,17 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                           <span
                             className={`inline-block px-2.5 py-0.5 rounded font-bold font-mono text-xs ${
                               isUnderThreshold
-                                ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                                ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60'
                                 : isZero
-                                ? 'bg-slate-200 text-slate-600'
-                                : 'bg-slate-100 text-slate-900 border border-slate-200'
+                                ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800'
                             }`}
                           >
                             {item.saldoActual} und
                           </span>
                         </td>
 
-                        <td className="py-3 px-3 font-mono text-slate-800">
+                        <td className="py-3 px-3 font-mono text-slate-800 dark:text-slate-100">
                           <div>{item.volumenTotalM3.toFixed(3)} m³</div>
                         </td>
 
@@ -467,7 +467,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                             <button
                               onClick={() => onOpenDiagramModal(item)}
                               title="Ver ficha dimensional 3D"
-                              className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-medium transition-colors cursor-pointer"
+                              className="px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded text-xs font-medium transition-colors cursor-pointer"
                             >
                               3D
                             </button>
@@ -486,14 +486,14 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                                 <button
                                   onClick={() => { setEditingItem(item); setEditUmbral(String(item.umbralMinimo)); }}
                                   title="Editar umbral mínimo de esta referencia"
-                                  className="p-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded transition-colors cursor-pointer"
+                                  className="p-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 rounded transition-colors cursor-pointer"
                                 >
                                   <Pencil className="h-3.5 w-3.5" />
                                 </button>
                                 <button
                                   onClick={() => onDeleteReference(item)}
                                   title="Eliminar referencia (anula todo su historial de movimientos)"
-                                  className="p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded transition-colors cursor-pointer"
+                                  className="p-1 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 rounded transition-colors cursor-pointer"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </button>
@@ -514,7 +514,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
       {/* Quick-edit del umbral mínimo de una referencia */}
       {editingItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-sm w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-sm w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Pencil className="h-4 w-4 text-amber-400" />
@@ -525,14 +525,14 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               </button>
             </div>
             <div className="p-5 space-y-3">
-              <div className="text-xs text-slate-500">
-                <span className="font-bold text-slate-800">{editingItem.claseEquipo}</span> ({editingItem.tipoEquipo})
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-bold text-slate-800 dark:text-slate-100">{editingItem.claseEquipo}</span> ({editingItem.tipoEquipo})
               </div>
               <p className="text-[11px] text-slate-400">
                 Las dimensiones y el tipo son parte del historial de movimientos y no se editan aquí; solo el umbral que dispara la alerta de stock bajo.
               </p>
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Umbral mínimo (unidades)</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Umbral mínimo (unidades)</label>
                 <input
                   type="number"
                   min="0"
@@ -540,13 +540,13 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                   value={editUmbral}
                   onChange={(e) => setEditUmbral(e.target.value)}
                   autoFocus
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono font-bold text-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-mono font-bold text-amber-700 dark:text-amber-400 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setEditingItem(null)}
-                  className="px-3 py-2 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 cursor-pointer"
+                  className="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   Cancelar
                 </button>

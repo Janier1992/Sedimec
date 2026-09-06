@@ -258,7 +258,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Modal Header */}
         <div className="px-5 sm:px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
@@ -292,14 +292,14 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
         </div>
 
         {/* Tab Selection */}
-        <div className="px-6 pt-3 pb-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div className="px-6 pt-3 pb-2 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveSubTab('umbrales')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 activeSubTab === 'umbrales'
                   ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-slate-200/80 text-slate-700 hover:bg-slate-300'
+                  : 'bg-slate-200/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-300'
               }`}
             >
               <Sliders className="h-3.5 w-3.5" />
@@ -311,7 +311,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 activeSubTab === 'notificaciones'
                   ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-slate-200/80 text-slate-700 hover:bg-slate-300'
+                  : 'bg-slate-200/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-300'
               }`}
             >
               <BellRing className="h-3.5 w-3.5" />
@@ -322,7 +322,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
           <button
             onClick={loadThresholdsData}
             title="Recargar datos"
-            className="p-1.5 text-slate-500 hover:text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+            className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
@@ -333,8 +333,8 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
           <div
             className={`px-6 py-2.5 text-xs font-bold flex items-center justify-between border-b ${
               actionMessage.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                : 'bg-rose-50 text-rose-800 border-rose-200'
+                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60'
+                : 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800/60'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -347,7 +347,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
             </div>
             <button
               onClick={() => setActionMessage(null)}
-              className="text-slate-400 hover:text-slate-700 cursor-pointer"
+              className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -360,20 +360,20 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
             <>
               {/* Admin configuration form */}
               {isAdmin ? (
-                <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl space-y-3">
+                <div className="p-4 bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
                       <Plus className="h-4 w-4 text-amber-600" />
                       Definir o Actualizar Umbral Mínimo
                     </span>
-                    <span className="text-[11px] text-amber-700">
+                    <span className="text-[11px] text-amber-700 dark:text-amber-400">
                       Disparará alerta automática si el saldo desciende a este valor o menor
                     </span>
                   </div>
 
                   <form onSubmit={handleSaveThreshold} className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Tipo de Equipo
                       </label>
                       <input
@@ -383,7 +383,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                         onChange={(e) => setTipoEquipo(e.target.value)}
                         placeholder="ej: Estructura Metálica"
                         required
-                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
                       />
                       <datalist id="modal-tipos-list">
                         {COMMON_TIPOS.map((t) => (
@@ -393,7 +393,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Clase de Equipo / Especificación
                       </label>
                       <input
@@ -403,7 +403,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                         onChange={(e) => setClaseEquipo(e.target.value)}
                         placeholder="ej: Viga IPE 300"
                         required
-                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
                       />
                       <datalist id="modal-clases-list">
                         {COMMON_CLASES.map((c) => (
@@ -413,7 +413,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Stock Mínimo (piezas)
                       </label>
                       <input
@@ -423,7 +423,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                         value={umbralMinimo}
                         onChange={(e) => setUmbralMinimo(parseInt(e.target.value, 10) || 0)}
                         required
-                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-mono font-bold text-amber-700 dark:text-amber-400 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                       />
                     </div>
 
@@ -440,8 +440,8 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                   </form>
                 </div>
               ) : (
-                <div className="p-3.5 bg-slate-100 rounded-xl border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
-                  <ShieldAlert className="h-4 w-4 text-slate-500" />
+                <div className="p-3.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                  <ShieldAlert className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                   <span>
                     Está conectado como <strong>{currentUser.nombre} ({currentUser.rol})</strong>. La edición de umbrales está restringida al Administrador según políticas RBAC.
                   </span>
@@ -451,17 +451,17 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
               {/* Threshold Rules Table */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Reglas Parametrizadas ({thresholds.length})
                   </h3>
-                  <span className="text-[11px] text-slate-500">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">
                     Comparación en tiempo real con inventario en patio
                   </span>
                 </div>
 
-                <div className="border border-slate-200 rounded-2xl overflow-x-auto shadow-xs">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-x-auto shadow-xs">
                   <table className="w-full text-left text-xs border-collapse min-w-[550px]">
-                    <thead className="bg-slate-100/80 text-slate-600 text-[11px] font-extrabold uppercase border-b border-slate-200">
+                    <thead className="bg-slate-100/80 text-slate-600 dark:text-slate-400 text-[11px] font-extrabold uppercase border-b border-slate-200 dark:border-slate-800">
                       <tr>
                         <th className="py-2.5 px-3">Tipo de Equipo</th>
                         <th className="py-2.5 px-3">Clase / Referencia</th>
@@ -471,7 +471,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                         <th className="py-2.5 px-3 text-right">Acciones</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                       {thresholds.length === 0 ? (
                         <tr>
                           <td colSpan={6} className="py-6 text-center text-slate-400">
@@ -481,26 +481,26 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                       ) : (
                         thresholds.map((th) => (
                           <tr key={th.id} className="hover:bg-slate-50/80 transition-colors">
-                            <td className="py-2.5 px-3 font-semibold text-slate-700">
+                            <td className="py-2.5 px-3 font-semibold text-slate-700 dark:text-slate-300">
                               {th.tipoEquipo}
                             </td>
-                            <td className="py-2.5 px-3 font-bold text-slate-900">
+                            <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
                               {th.claseEquipo}
                             </td>
-                            <td className="py-2.5 px-3 text-center font-mono font-bold text-amber-700">
+                            <td className="py-2.5 px-3 text-center font-mono font-bold text-amber-700 dark:text-amber-400">
                               {th.umbralMinimo} und
                             </td>
-                            <td className="py-2.5 px-3 text-center font-mono font-extrabold text-slate-900">
+                            <td className="py-2.5 px-3 text-center font-mono font-extrabold text-slate-900 dark:text-white">
                               {th.saldoActualEnPatio} und
                             </td>
                             <td className="py-2.5 px-3 text-center">
                               {th.estaBajoUmbral ? (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 border border-rose-300">
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-300">
                                   <AlertTriangle className="h-3 w-3" />
                                   STOCK CRÍTICO
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                                   <CheckCircle2 className="h-3 w-3" />
                                   ABASTECIDO
                                 </span>
@@ -513,7 +513,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                                   onClick={() => handleSendTestEmail(th)}
                                   disabled={isSendingEmail}
                                   title="Disparar notificación por correo"
-                                  className="p-1.5 text-slate-600 hover:text-amber-700 bg-slate-100 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                                  className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-400 bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
                                 >
                                   <Mail className="h-3.5 w-3.5" />
                                 </button>
@@ -522,7 +522,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                                     type="button"
                                     onClick={() => handleDelete(th.id, th.claseEquipo)}
                                     title="Eliminar umbral"
-                                    className="p-1.5 text-slate-400 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                                    className="p-1.5 text-slate-400 hover:text-rose-600 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </button>
@@ -541,9 +541,9 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
             /* Notification Dispatch Log Tab */
             <div className="space-y-4">
               {/* Configuración de destinatarios y remitente */}
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Configuración de Alertas por Correo
                   </span>
                   <button
@@ -551,7 +551,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                     onClick={isAdmin ? handleToggleEnabled : undefined}
                     disabled={!isAdmin || isSavingSettings}
                     title={isAdmin ? 'Activar/desactivar el envío automático de alertas' : 'Solo el Administrador puede cambiar esto'}
-                    className={`flex items-center gap-1.5 text-xs font-bold ${isAdmin ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'} ${notifEnabled ? 'text-emerald-700' : 'text-slate-400'}`}
+                    className={`flex items-center gap-1.5 text-xs font-bold ${isAdmin ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'} ${notifEnabled ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400'}`}
                   >
                     {notifEnabled ? <ToggleRight className="h-5 w-5" /> : <ToggleLeft className="h-5 w-5" />}
                     <span>{notifEnabled ? 'Alertas activadas' : 'Alertas desactivadas'}</span>
@@ -559,7 +559,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1.5">
+                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5">
                     Nombre del remitente
                   </label>
                   <div className="flex gap-2">
@@ -570,27 +570,27 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                       onBlur={() => isAdmin && handleSaveSettings()}
                       disabled={!isAdmin}
                       placeholder="Sedimec Sistema de Alertas"
-                      className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:opacity-60"
+                      className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:opacity-60"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1.5">
+                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5">
                     Destinatarios ({recipients.length})
                   </label>
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {recipients.map((email) => (
                       <span
                         key={email}
-                        className="flex items-center gap-1 pl-2.5 pr-1 py-1 bg-white border border-slate-200 rounded-full text-[11px] text-slate-700"
+                        className="flex items-center gap-1 pl-2.5 pr-1 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-[11px] text-slate-700 dark:text-slate-300"
                       >
                         {email}
                         {isAdmin && (
                           <button
                             type="button"
                             onClick={() => handleRemoveRecipient(email)}
-                            className="p-0.5 hover:bg-rose-100 hover:text-rose-600 rounded-full cursor-pointer"
+                            className="p-0.5 hover:bg-rose-100 dark:hover:bg-rose-950/60 hover:text-rose-600 dark:hover:text-rose-400 rounded-full cursor-pointer"
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -609,7 +609,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                         onChange={(e) => setNewRecipient(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddRecipient())}
                         placeholder="correo@sedimec.com"
-                        className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
                       />
                       <button
                         type="button"
@@ -625,7 +625,7 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                 </div>
 
                 {isAdmin && (
-                  <div className="pt-2 border-t border-slate-200 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center justify-between">
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center justify-between">
                     <button
                       type="button"
                       onClick={handleSendGenericTestEmail}
@@ -643,16 +643,16 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
               </div>
 
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Historial de Notificaciones de Stock Mínimo Despachadas ({notifications.length})
                 </h3>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">
                   Monitoreo de alertas operativas enviadas al correo corporativo
                 </span>
               </div>
 
               {notifications.length === 0 ? (
-                <div className="py-12 text-center text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+                <div className="py-12 text-center text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
                   No hay registros de alertas de stock enviadas.
                 </div>
               ) : (
@@ -660,16 +660,16 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                   {notifications.map((notif) => (
                     <div
                       key={notif.id}
-                      className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
+                      className="p-3.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-900">{notif.asunto}</span>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                          <span className="font-bold text-slate-900 dark:text-white">{notif.asunto}</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300">
                             {notif.estado}
                           </span>
                         </div>
-                        <p className="text-slate-600 text-[11px]">{notif.mensajeDetallado}</p>
+                        <p className="text-slate-600 dark:text-slate-400 text-[11px]">{notif.mensajeDetallado}</p>
                         <div className="flex items-center gap-3 text-[10px] text-slate-400">
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
@@ -679,9 +679,9 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
                         </div>
                       </div>
 
-                      <div className="bg-white px-3 py-1.5 rounded-lg border border-slate-200 text-center font-mono text-[11px]">
-                        <span className="text-slate-500 block text-[9px] uppercase">Saldo / Umbral</span>
-                        <span className="font-extrabold text-amber-700">{notif.saldoActual} und</span> / {notif.umbralConfigurado} und
+                      <div className="bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-center font-mono text-[11px]">
+                        <span className="text-slate-500 dark:text-slate-400 block text-[9px] uppercase">Saldo / Umbral</span>
+                        <span className="font-extrabold text-amber-700 dark:text-amber-400">{notif.saldoActual} und</span> / {notif.umbralConfigurado} und
                       </div>
                     </div>
                   ))}
@@ -692,8 +692,8 @@ export const StockThresholdsModal: React.FC<StockThresholdsModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-4 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-1.5 text-xs text-slate-500">
+        <div className="px-4 sm:px-6 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
             <Info className="h-4 w-4 text-slate-400 shrink-0" />
             <span className="text-[11px] sm:text-xs">Las alertas se emiten automáticamente cada vez que una Salida reduzca el saldo por debajo del umbral.</span>
           </div>

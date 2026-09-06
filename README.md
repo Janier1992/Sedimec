@@ -99,6 +99,18 @@ VITE_TEST_E2E_PASSWORD="contraseña-de-esa-cuenta"
 
 Usa una cuenta dedicada (con rol `admin`, para que el test pueda limpiar lo que crea), nunca tu cuenta real de negocio — créala desde **Gestión de Usuarios**.
 
+### Pruebas de RBAC (control de acceso por rol)
+
+`src/services/api.rbac.test.ts` prueba que admin/operador/auditor tienen exactamente los permisos que deben tener, reforzados por RLS y las funciones RPC (no por la interfaz). Necesita 3 cuentas de prueba dedicadas, una por rol:
+
+```
+VITE_TEST_E2E_EMAIL / VITE_TEST_E2E_PASSWORD                     # rol admin
+VITE_TEST_E2E_OPERADOR_EMAIL / VITE_TEST_E2E_OPERADOR_PASSWORD   # rol operador
+VITE_TEST_E2E_AUDITOR_EMAIL / VITE_TEST_E2E_AUDITOR_PASSWORD     # rol auditor
+```
+
+También opcional: si faltan, se omite solo.
+
 ---
 
 ## Arquitectura

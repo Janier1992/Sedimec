@@ -32,7 +32,9 @@ export interface Movimiento {
   saldoResultante?: number; // Saldo tras este movimiento
   imagenDiagramaUrl?: string; // URL o base64 de imagen generada o diagrama
   creadoPor: {
-    id: string;
+    // Puede ser null si la cuenta del autor fue eliminada -- nombre/rol quedan
+    // sellados como snapshot inmutable del historial, el vínculo en vivo no.
+    id: string | null;
     nombre: string;
     rol: UserRole;
   };

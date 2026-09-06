@@ -22,11 +22,14 @@ declare global {
 }
 
 function getSupabaseClient(): SupabaseClient {
-  if (import.meta.env.DEV && window.__sedimecSupabaseClient__) {
+  // `window` no existe fuera del navegador (tests con Vitest en Node, SSR, etc.).
+  const hasWindow = typeof window !== 'undefined';
+
+  if (import.meta.env.DEV && hasWindow && window.__sedimecSupabaseClient__) {
     return window.__sedimecSupabaseClient__;
   }
   const client = createClient(supabaseUrl, supabaseAnonKey);
-  if (import.meta.env.DEV) {
+  if (import.meta.env.DEV && hasWindow) {
     window.__sedimecSupabaseClient__ = client;
     // Permite inspeccionar la sesión desde la consola del navegador para depurar.
     (window as unknown as { supabase: SupabaseClient }).supabase = client;

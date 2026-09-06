@@ -22,23 +22,18 @@ Sistema empresarial para Sedimec S.A. (metalmecánica): recepción y entrega de 
    - Este único script crea las tablas (`profiles`, `movimientos`, `umbrales_stock`, `alertas_stock_email`, `notification_settings`), la vista `inventario_actual`, las políticas RLS, los triggers de negocio y las funciones de auditoría (`run_integrity_check`, `reconcile_movimientos`, `anular_movimiento`), además del bucket de Storage para los diagramas técnicos.
    - Es idempotente en el sentido de que solo debes correrlo **una vez** sobre un proyecto nuevo.
 
-## 3. Crear los 3 usuarios de acceso
+## 3. Crear el primer Administrador
 
-RLS exige un usuario autenticado real — ya no existe el selector de "usuario demo" del prototipo original.
+RLS exige un usuario autenticado real. Solo necesitas crear **uno** manualmente; desde ahí, el resto de usuarios (operadores, auditores, otros administradores) se crean directamente en la aplicación desde **Gestión de Usuarios** en el menú lateral (requiere estar logueado como admin).
 
-1. Ve a **Authentication → Users → Add user** y crea 3 usuarios (marca **Auto Confirm User**):
-   - `admin@sedimec.com` — será el Administrador
-   - `operador@sedimec.com` — será el Operador de Patio
-   - `auditor@sedimec.com` — será el Auditor
-2. Todo usuario nuevo nace con rol `operador` automáticamente. Promueve los otros dos roles ejecutando en el **SQL Editor**:
+1. Ve a **Authentication → Users → Add user**, crea tu cuenta (marca **Auto Confirm User**).
+2. Todo usuario nuevo nace con rol `operador` por defecto. Promuévete a administrador en el **SQL Editor**:
 
 ```sql
-update public.profiles set rol = 'admin'    where email = 'admin@sedimec.com';
-update public.profiles set rol = 'auditor'  where email = 'auditor@sedimec.com';
--- operador@sedimec.com ya queda como 'operador' por defecto
+update public.profiles set rol = 'admin' where email = 'tu-correo@ejemplo.com';
 ```
 
-3. (Opcional) Para cargar los 9 movimientos de ejemplo del patio, corre también [`supabase/seed.sql`](supabase/seed.sql) en el SQL Editor **después** de crear los usuarios.
+3. (Opcional, solo para tener datos de ejemplo) Corre [`supabase/seed.sql`](supabase/seed.sql) en el SQL Editor **después** de crear tu usuario y al menos un operador (el script asigna los movimientos a esas cuentas).
 
 ## 4. Desplegar las Edge Functions (funciones de IA y correo)
 
@@ -53,6 +48,8 @@ npx supabase functions deploy text-to-speech
 npx supabase functions deploy chat-inventario
 npx supabase functions deploy generate-diagram-image
 npx supabase functions deploy send-stock-alert-email
+npx supabase functions deploy admin-create-user
+npx supabase functions deploy admin-delete-user
 ```
 
 Luego configura los secrets (nunca van en el `.env` del cliente, solo aquí):
@@ -86,9 +83,21 @@ npm install
 npm run dev       # http://localhost:5173
 npm run build      # build de producción en dist/ (sube esta carpeta a cualquier hosting estático)
 npm run lint        # tsc --noEmit
+npm run test         # vitest — pruebas unitarias + integración
 ```
 
-Inicia sesión con cualquiera de los 3 correos que creaste en el paso 3 (con la contraseña que hayas definido al crearlos).
+Inicia sesión con la cuenta que creaste en el paso 3.
+
+### Pruebas de integración (flujo crítico Entrada → Inventario → Salida)
+
+`src/services/api.criticalFlow.test.ts` prueba las reglas de negocio contra la base de datos real (no mockeada, porque las reglas críticas viven en Postgres). Es opcional: si no defines estas dos variables en `.env.local`, el archivo se omite solo.
+
+```
+VITE_TEST_E2E_EMAIL="cuenta-de-pruebas@tu-dominio.com"
+VITE_TEST_E2E_PASSWORD="contraseña-de-esa-cuenta"
+```
+
+Usa una cuenta dedicada (con rol `admin`, para que el test pueda limpiar lo que crea), nunca tu cuenta real de negocio — créala desde **Gestión de Usuarios**.
 
 ---
 

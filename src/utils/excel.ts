@@ -5,13 +5,9 @@ import { Movimiento, ItemInventario } from '../types';
  * Exporta el historial de movimientos en formato Excel (.xlsx) o CSV (.csv)
  * garantizando compatibilidad 100% con la plantilla original del negocio Sedimec.
  */
-export function exportarMovimientosExcel(
-  movimientos: Movimiento[],
-  formato: 'xlsx' | 'csv' = 'xlsx',
-  nombreArchivo: string = 'Sedimec_Movimientos'
-) {
-  // Encabezados exactos según la plantilla oficial
-  const rows = movimientos.map((m) => ({
+/** Lógica pura de armado de filas -- separada para poder probarla sin DOM. */
+export function buildMovimientosRows(movimientos: Movimiento[]) {
+  return movimientos.map((m) => ({
     'Fecha': new Date(m.fecha).toLocaleString('es-CO', {
       year: 'numeric',
       month: '2-digit',
@@ -35,7 +31,14 @@ export function exportarMovimientosExcel(
     'Saldo Resultante': m.saldoResultante !== undefined ? m.saldoResultante : '',
     'Registrado Por': m.creadoPor?.nombre || '',
   }));
+}
 
+export function exportarMovimientosExcel(
+  movimientos: Movimiento[],
+  formato: 'xlsx' | 'csv' = 'xlsx',
+  nombreArchivo: string = 'Sedimec_Movimientos'
+) {
+  const rows = buildMovimientosRows(movimientos);
   const worksheet = XLSX.utils.json_to_sheet(rows);
 
   // Auto-ajuste de anchos de columna
@@ -77,11 +80,9 @@ export function exportarMovimientosExcel(
 /**
  * Exporta el inventario consolidado actual (Saldo = Entradas - Salidas)
  */
-export function exportarInventarioConsolidadoExcel(
-  items: ItemInventario[],
-  formato: 'xlsx' | 'csv' = 'xlsx'
-) {
-  const rows = items.map((item, index) => ({
+/** Lógica pura de armado de filas -- separada para poder probarla sin DOM. */
+export function buildInventarioRows(items: ItemInventario[]) {
+  return items.map((item, index) => ({
     'N°': index + 1,
     'Tipo de Equipo': item.tipoEquipo,
     'Clase de Equipo': item.claseEquipo,
@@ -94,12 +95,19 @@ export function exportarInventarioConsolidadoExcel(
     'Saldo Actual (Existencias)': item.saldoActual,
     'Volumen Unitario (m³)': Number(item.volumenUnitarioM3.toFixed(4)),
     'Volumen Total Almacenado (m³)': Number(item.volumenTotalM3.toFixed(3)),
-    'Alerta Stock Bajo': item.saldoActual <= 3 ? 'SÍ (Bajo Stock)' : 'NORMAL',
+    'Umbral Mínimo Configurado': item.umbralMinimo,
+    'Alerta Stock Bajo': item.alertaStockBajo ? 'SÍ (Bajo Stock)' : 'NORMAL',
     'Último Movimiento': item.ultimoMovimientoFecha
       ? new Date(item.ultimoMovimientoFecha).toLocaleDateString('es-CO')
       : '-',
   }));
+}
 
+export function exportarInventarioConsolidadoExcel(
+  items: ItemInventario[],
+  formato: 'xlsx' | 'csv' = 'xlsx'
+) {
+  const rows = buildInventarioRows(items);
   const worksheet = XLSX.utils.json_to_sheet(rows);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Inventario Existencias');

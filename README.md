@@ -1,9 +1,56 @@
 # Sedimec — Control de Inventario, Entradas y Salidas
 
-Sistema empresarial para Sedimec S.A. (metalmecánica): recepción y entrega de piezas estructurales, cálculo de existencias en tiempo real, umbrales de stock con alertas por correo, auditoría de integridad de inventario y un asistente de voz/chat con IA (Gemini).
+Sistema empresarial de control de patio e inventario para **Sedimec S.A.** (metalmecánica): digitaliza la recepción y entrega de piezas estructurales, calcula existencias en tiempo real a partir del libro de movimientos, gestiona umbrales de stock con alertas por correo, audita la integridad del inventario, y permite registrar movimientos por voz con ayuda de IA.
 
-- **Frontend**: React 19 + Vite + Tailwind (SPA estática, sin servidor Node).
-- **Backend**: [Supabase](https://supabase.com) (plan gratuito) — PostgreSQL + Auth + Row Level Security + Edge Functions.
+La base de datos (PostgreSQL vía Supabase) es la única fuente de verdad. El saldo de cada referencia se calcula siempre como `Entradas − Salidas` sobre el historial completo de movimientos — nunca se guarda como un número editable aparte, así que no puede desincronizarse.
+
+---
+
+## Funcionalidades
+
+- **Entradas y Salidas**: registro de recepción/despacho de piezas con dimensiones (cm), cantidad, procedencia/destino, responsable y estado del equipo.
+- **Inventario en tiempo real**: saldo, cubicaje (m³) y estado de cada referencia, calculado desde el libro de movimientos.
+- **Historial y trazabilidad**: cada movimiento queda con código de lote consecutivo, comprobante imprimible, y quién lo registró. Los movimientos nunca se borran físicamente, solo se anulan (soft-delete) para preservar la auditoría.
+- **Umbrales y alertas de stock**: umbral mínimo configurable por referencia; al cruzarlo se dispara una alerta automática por correo (Resend o SMTP).
+- **Auditoría de integridad**: motor de 6 reglas que verifica el libro de movimientos (balance de saldos, continuidad cronológica, unicidad de lotes, completitud de datos) y una conciliación de 1 clic.
+- **Asistente por voz e IA conversacional**: dicta un movimiento en español natural y la IA (Gemini) lo transcribe, interpreta y prellena el formulario para tu revisión antes de guardar — nunca escribe directo al inventario sin confirmación humana. Incluye chat de consulta sobre el estado del inventario y generación de planos técnicos de piezas.
+- **Exportación a Excel/CSV**: del historial de movimientos y del inventario consolidado.
+- **Gestión de usuarios y roles**: el Administrador crea usuarios y asigna rol directamente desde la aplicación — sin tocar el dashboard de Supabase.
+- **Control de acceso por rol (RBAC)**: `admin` (control total), `operador` (registra movimientos), `auditor` (solo lectura) — reforzado en la base de datos (RLS), no solo en la interfaz.
+
+---
+
+## Stack tecnológico
+
+| Capa | Tecnología |
+|---|---|
+| Frontend | React 19 + TypeScript + Vite (SPA estática, sin servidor Node) |
+| Estilos | Tailwind CSS |
+| Backend | [Supabase](https://supabase.com) (plan gratuito) — PostgreSQL, Auth (GoTrue), Row Level Security, Storage |
+| Lógica de servidor | Supabase Edge Functions (Deno) |
+| IA | Google Gemini (voz, chat, generación de imágenes), con fallback local por reglas si no hay API key |
+| Correo | Resend (HTTP) o SMTP propio, con modo "Simulado" por defecto |
+| Testing | Vitest — unitarias, y de integración contra la base de datos real (sin mocks para reglas de negocio) |
+| Excel/CSV | [SheetJS (xlsx)](https://sheetjs.com) |
+
+### Estructura del proyecto
+
+```
+src/
+├── components/       Componentes de React (una vista/modal por archivo)
+├── services/api.ts   Única capa de acceso a datos -- supabase-js (tablas, RPC, Edge Functions)
+├── lib/               Cliente de Supabase
+├── types.ts           Contrato de datos del dominio
+└── utils/             Exportación Excel/CSV, audio
+
+supabase/
+├── schema_completo.sql   Script único: tablas, RLS, triggers, vistas y funciones (para pegar en el SQL Editor)
+├── migrations/            Las mismas migraciones, una por archivo (control de versiones)
+├── functions/             Edge Functions (Deno): IA, correo, gestión de usuarios
+└── seed.sql               Datos de ejemplo opcionales
+
+scripts/    Scripts puntuales de administración (crear usuarios demo, etc.)
+```
 
 ---
 
@@ -20,7 +67,7 @@ Sistema empresarial para Sedimec S.A. (metalmecánica): recepción y entrega de 
 1. Abre **SQL Editor → New query** en el dashboard de tu proyecto.
 2. Pega **todo** el contenido de [`supabase/schema_completo.sql`](supabase/schema_completo.sql) y presiona **Run**.
    - Este único script crea las tablas (`profiles`, `movimientos`, `umbrales_stock`, `alertas_stock_email`, `notification_settings`), la vista `inventario_actual`, las políticas RLS, los triggers de negocio y las funciones de auditoría (`run_integrity_check`, `reconcile_movimientos`, `anular_movimiento`), además del bucket de Storage para los diagramas técnicos.
-   - Es idempotente en el sentido de que solo debes correrlo **una vez** sobre un proyecto nuevo.
+   - Solo debes correrlo **una vez** sobre un proyecto nuevo.
 
 ## 3. Crear el primer Administrador
 
@@ -123,22 +170,15 @@ React (Vite SPA)
  │    RPC:    run_integrity_check() · reconcile_movimientos() · anular_movimiento()
  └─ supabase-js functions.invoke() → Edge Functions (Deno, secrets del lado servidor)
       transcribe-audio · parse-movimiento-nlp · text-to-speech · chat-inventario ·
-      generate-diagram-image · send-stock-alert-email
+      generate-diagram-image · send-stock-alert-email · admin-create-user · admin-delete-user
 ```
 
 Puntos clave del diseño (ver `supabase/schema_completo.sql` para el detalle):
 
-- **El libro de movimientos es la única fuente de verdad.** El inventario (`inventario_actual`) es una vista SQL que siempre se recalcula desde los movimientos — nunca puede desincronizarse.
-- **El rol del usuario lo resuelve el servidor** (tabla `profiles` + `auth.uid()`), nunca un valor que declare el cliente. Row Level Security aplica las reglas de negocio (admin/operador/auditor) directamente en Postgres.
-- **Los movimientos nunca se borran físicamente** — se anulan (soft-delete con `anulado_por`/`anulado_en`/`motivo_anulacion`) para preservar la trazabilidad de auditoría.
-- **Las funciones de IA viven en Edge Functions**, el único lugar donde existe `GEMINI_API_KEY`. Cada una conserva su fallback local (parser por reglas, motor de chat local, síntesis de voz nativa del navegador) para que la app nunca deje de funcionar sin la key.
-
-### Diferencias frente al prototipo original de AI Studio
-
-- Se eliminó el servidor Express (`server.ts`) y el almacenamiento en memoria — todo es Postgres persistente.
-- Se eliminó el selector de "usuario demo" — ahora es login real con Supabase Auth.
-- Se eliminaron las herramientas de demo "Simular Descuadre" / "Restablecer Datos de Fábrica", pensadas para datos efímeros en memoria y sin sentido con datos reales persistidos.
-- Se agregó al menú lateral el motor de **Auditoría de Integridad** (el componente ya existía en el prototipo pero nunca estaba conectado a la aplicación).
+- **El libro de movimientos es la única fuente de verdad.** El inventario (`inventario_actual`) es una vista SQL que siempre se recalcula desde los movimientos — nunca puede desincronizarse. El frontend nunca recalcula esta regla por su cuenta; siempre lee el campo ya calculado.
+- **El rol del usuario lo resuelve el servidor** (tabla `profiles` + `auth.uid()`), nunca un valor que declare el cliente. Row Level Security aplica las reglas de negocio (admin/operador/auditor) directamente en Postgres, verificado con tests automatizados de RBAC.
+- **Los movimientos nunca se borran físicamente** — se anulan (soft-delete con `anulado_por`/`anulado_en`/`motivo_anulacion`) para preservar la trazabilidad de auditoría. Al eliminar un usuario, su historial se conserva (el nombre y rol quedan sellados como snapshot inmutable en cada movimiento).
+- **Las funciones de IA viven en Edge Functions**, el único lugar donde existe `GEMINI_API_KEY`. Cada una conserva su fallback local (parser por reglas, motor de chat local, síntesis de voz nativa del navegador) para que la app nunca deje de funcionar sin la key. La IA nunca escribe directo al inventario: siempre pasa por transcripción → extracción estructurada → revisión humana en el formulario → confirmación → persistencia.
 
 ---
 

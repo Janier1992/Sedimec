@@ -58,7 +58,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     );
   }
 
-  const criticalStockItems = inventoryItems.filter((i) => i.saldoActual <= (i.umbralMinimo || 5) && i.saldoActual >= 0);
+  const criticalStockItems = inventoryItems.filter((i) => i.alertaStockBajo && i.saldoActual >= 0);
 
   return (
     <div className="space-y-5 pb-8">

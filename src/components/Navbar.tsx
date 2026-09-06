@@ -315,7 +315,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                   ) : (
                     matchingItems.map((item) => {
-                      const isLow = item.saldoActual <= (item.umbralMinimo || 5);
+                      const isLow = item.alertaStockBajo;
                       return (
                         <div
                           key={item.id}

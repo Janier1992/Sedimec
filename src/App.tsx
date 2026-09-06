@@ -45,6 +45,7 @@ export default function App() {
   const [session, setSession] = useState<import('@supabase/supabase-js').Session | null>(null);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
+  const [profileLoadError, setProfileLoadError] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<'dashboard' | 'inventario' | 'movimientos'>('dashboard');
 
@@ -53,6 +54,7 @@ export default function App() {
   const [inventoryItems, setInventoryItems] = useState<ItemInventario[]>([]);
   const [kpis, setKpis] = useState<KpiMetrics | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dataLoadError, setDataLoadError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -113,6 +115,7 @@ export default function App() {
   useEffect(() => {
     if (!session?.user) {
       setCurrentUser(null);
+      setProfileLoadError(null);
       return;
     }
     supabase
@@ -123,8 +126,12 @@ export default function App() {
       .then(({ data, error }) => {
         if (error || !data) {
           console.error('Error cargando perfil de usuario:', error);
+          setProfileLoadError(
+            'No se pudo cargar tu perfil. Es posible que tu cuenta haya sido eliminada o que tu sesión haya quedado inválida.'
+          );
           return;
         }
+        setProfileLoadError(null);
         setCurrentUser({
           id: data.id,
           nombre: data.nombre,
@@ -149,9 +156,12 @@ export default function App() {
       setMovements(movRes.data);
       setInventoryItems(invRes.data);
       setKpis(kpiRes);
+      setDataLoadError(null);
     } catch (err: unknown) {
       console.error('Error cargando datos:', err);
-      showToast('error', 'Error conectando con el servidor de inventario');
+      const msg = err instanceof Error ? err.message : 'Error conectando con el servidor de inventario';
+      setDataLoadError(msg);
+      showToast('error', msg);
     } finally {
       setIsLoading(false);
     }
@@ -210,7 +220,7 @@ export default function App() {
                 i.claseEquipo.trim().toLowerCase() === newMov.claseEquipo.trim().toLowerCase() &&
                 i.ancho === newMov.ancho && i.largo === newMov.largo && i.profundidad === newMov.profundidad
             );
-            if (item && item.saldoActual <= item.umbralMinimo) {
+            if (item?.alertaStockBajo) {
               sendStockAlertEmail({
                 tipoEquipo: newMov.tipoEquipo,
                 claseEquipo: newMov.claseEquipo,
@@ -334,13 +344,35 @@ export default function App() {
   };
 
   const totalStock = inventoryItems.reduce((acc, i) => acc + Math.max(0, i.saldoActual), 0);
-  const lowStockCount = inventoryItems.filter((i) => i.alertaStockBajo || (i.umbralMinimo !== undefined && i.saldoActual <= i.umbralMinimo)).length;
+  const lowStockCount = inventoryItems.filter((i) => i.alertaStockBajo).length;
 
   // ── Pantalla de acceso: sin sesión no se renderiza el aplicativo ──
   if (authLoading) {
     return (
       <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (session && !currentUser && profileLoadError) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+        <div className="max-w-sm w-full bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 text-center space-y-4">
+          <div className="p-3 bg-rose-100 text-rose-600 rounded-2xl inline-flex mx-auto">
+            <AlertCircle className="h-7 w-7" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-slate-900">No se pudo cargar tu cuenta</h2>
+            <p className="text-xs text-slate-500 mt-1">{profileLoadError}</p>
+          </div>
+          <button
+            onClick={() => supabase.auth.signOut()}
+            className="w-full px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+          >
+            Cerrar sesión e intentar de nuevo
+          </button>
+        </div>
       </div>
     );
   }
@@ -423,6 +455,22 @@ export default function App() {
               <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
                 Sincronizando existencias de Sedimec...
               </p>
+            </div>
+          ) : dataLoadError && !kpis ? (
+            <div className="py-24 flex flex-col items-center justify-center space-y-4 text-center max-w-md mx-auto">
+              <div className="p-3 bg-rose-100 text-rose-600 rounded-2xl">
+                <AlertCircle className="h-8 w-8" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-slate-900">No se pudo cargar el inventario</h2>
+                <p className="text-xs text-slate-500 mt-1">{dataLoadError}</p>
+              </div>
+              <button
+                onClick={loadData}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+              >
+                Reintentar
+              </button>
             </div>
           ) : (
             <>

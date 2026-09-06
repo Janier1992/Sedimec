@@ -97,7 +97,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
       const matchTipo = selectedTipo === 'todos' || item.tipoEquipo === selectedTipo;
       const matchEstado = selectedEstado === 'todos' || item.estadoEquipo === selectedEstado;
-      const matchStockBajo = !filterStockBajo || item.saldoActual <= (item.umbralMinimo || 5);
+      const matchStockBajo = !filterStockBajo || item.alertaStockBajo;
 
       return matchSearch && matchTipo && matchEstado && matchStockBajo;
     });
@@ -112,7 +112,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   }, [filteredItems]);
 
   const lowStockCount = useMemo(() => {
-    return filteredItems.filter((i) => i.saldoActual <= (i.umbralMinimo || 5)).length;
+    return filteredItems.filter((i) => i.alertaStockBajo).length;
   }, [filteredItems]);
 
   return (
@@ -295,7 +295,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
           {/* Vista móvil para pantallas pequeñas */}
           <div className="md:hidden space-y-3">
             {filteredItems.map((item) => {
-              const isUnderThreshold = item.saldoActual <= (item.umbralMinimo || 5);
+              const isUnderThreshold = item.alertaStockBajo;
               const isZero = item.saldoActual === 0;
 
               return (
@@ -395,7 +395,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
                   {filteredItems.map((item) => {
-                    const isUnderThreshold = item.saldoActual <= (item.umbralMinimo || 5);
+                    const isUnderThreshold = item.alertaStockBajo;
                     const isZero = item.saldoActual === 0;
 
                     return (

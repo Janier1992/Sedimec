@@ -200,15 +200,26 @@ export const AdminUsersPanel: React.FC<AdminUsersPanelProps> = ({ currentUser })
       )}
 
       {/* Botón / formulario de creación */}
-      {!isFormOpen ? (
-        <button
-          onClick={() => setIsFormOpen(true)}
-          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-extrabold shadow-md transition-all cursor-pointer"
-        >
-          <UserPlus className="h-4 w-4" />
-          <span>Crear Nuevo Usuario</span>
-        </button>
-      ) : (
+      <div className="space-y-2">
+        <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          Agregar Usuario Directamente
+        </h3>
+        {!isFormOpen && (
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            Crea la cuenta con acceso inmediato (Operador, Auditor o Administrador), sin pasar por una solicitud.
+          </p>
+        )}
+        {!isFormOpen && (
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-extrabold shadow-md transition-all cursor-pointer"
+          >
+            <UserPlus className="h-4 w-4" />
+            <span>Crear Nuevo Usuario</span>
+          </button>
+        )}
+      </div>
+      {isFormOpen && (
         <form onSubmit={handleCreate} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>

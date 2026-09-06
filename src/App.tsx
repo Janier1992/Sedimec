@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import confetti from 'canvas-confetti';
 import {
   AlertCircle,
@@ -32,16 +32,21 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { DashboardView } from './components/DashboardView';
 import { InventoryView } from './components/InventoryView';
 import { MovementsHistoryView } from './components/MovementsHistoryView';
-import { MovementFormModal } from './components/MovementFormModal';
-import { VoiceAssistantModal } from './components/VoiceAssistantModal';
-import { PieceDiagramGeneratorModal } from './components/PieceDiagramGeneratorModal';
-import { MovementDetailModal } from './components/MovementDetailModal';
-import { AuthModal } from './components/AuthModal';
-import { StockThresholdsModal } from './components/StockThresholdsModal';
-import { IntegrityCheckModal } from './components/IntegrityCheckModal';
-import { UserManagementModal } from './components/UserManagementModal';
-import { OnboardingModal } from './components/OnboardingModal';
-import { ConversationalAgentWidget } from './components/ConversationalAgentWidget';
+
+// Modales y widgets secundarios: no se necesitan en el primer render (todos
+// están cerrados/ocultos hasta que el usuario los abre), así que se separan
+// en chunks propios para reducir el JS que el navegador debe descargar y
+// ejecutar antes de mostrar la pantalla principal.
+const MovementFormModal = lazy(() => import('./components/MovementFormModal').then((m) => ({ default: m.MovementFormModal })));
+const VoiceAssistantModal = lazy(() => import('./components/VoiceAssistantModal').then((m) => ({ default: m.VoiceAssistantModal })));
+const PieceDiagramGeneratorModal = lazy(() => import('./components/PieceDiagramGeneratorModal').then((m) => ({ default: m.PieceDiagramGeneratorModal })));
+const MovementDetailModal = lazy(() => import('./components/MovementDetailModal').then((m) => ({ default: m.MovementDetailModal })));
+const AuthModal = lazy(() => import('./components/AuthModal').then((m) => ({ default: m.AuthModal })));
+const StockThresholdsModal = lazy(() => import('./components/StockThresholdsModal').then((m) => ({ default: m.StockThresholdsModal })));
+const IntegrityCheckModal = lazy(() => import('./components/IntegrityCheckModal').then((m) => ({ default: m.IntegrityCheckModal })));
+const UserManagementModal = lazy(() => import('./components/UserManagementModal').then((m) => ({ default: m.UserManagementModal })));
+const OnboardingModal = lazy(() => import('./components/OnboardingModal').then((m) => ({ default: m.OnboardingModal })));
+const ConversationalAgentWidget = lazy(() => import('./components/ConversationalAgentWidget').then((m) => ({ default: m.ConversationalAgentWidget })));
 
 export default function App() {
   const { isDark, toggleTheme } = useTheme();
@@ -608,83 +613,105 @@ export default function App() {
         </div>
       )}
 
-      {/* MODALS */}
+      {/* MODALS -- todas cerradas/ocultas por defecto, cargadas en un chunk aparte */}
+      {/* Cada modal se monta solo cuando está abierto -- así el chunk lazy
+          correspondiente solo se descarga cuando el usuario realmente lo usa,
+          en vez de disparar todas las descargas apenas carga la app. */}
+      <Suspense fallback={null}>
+        {isMovementModalOpen && (
+          <MovementFormModal
+            isOpen={isMovementModalOpen}
+            onClose={() => setIsMovementModalOpen(false)}
+            onSubmit={handleCreateMovement}
+            initialTipo={movementModalTipo}
+            initialItem={movementModalInitialItem}
+            initialParsedVoice={movementModalInitialParsedVoice}
+            inventoryItems={inventoryItems}
+            onOpenVoiceModal={() => {
+              setIsMovementModalOpen(false);
+              setIsVoiceModalOpen(true);
+            }}
+            onOpenDiagramGenerator={(info) => handleOpenDiagramModal(info)}
+          />
+        )}
 
-      <MovementFormModal
-        isOpen={isMovementModalOpen}
-        onClose={() => setIsMovementModalOpen(false)}
-        onSubmit={handleCreateMovement}
-        initialTipo={movementModalTipo}
-        initialItem={movementModalInitialItem}
-        initialParsedVoice={movementModalInitialParsedVoice}
-        inventoryItems={inventoryItems}
-        onOpenVoiceModal={() => {
-          setIsMovementModalOpen(false);
-          setIsVoiceModalOpen(true);
-        }}
-        onOpenDiagramGenerator={(info) => handleOpenDiagramModal(info)}
-      />
+        {isVoiceModalOpen && (
+          <VoiceAssistantModal
+            isOpen={isVoiceModalOpen}
+            onClose={() => setIsVoiceModalOpen(false)}
+            onReviewInForm={handleVoiceReviewInForm}
+          />
+        )}
 
-      <VoiceAssistantModal
-        isOpen={isVoiceModalOpen}
-        onClose={() => setIsVoiceModalOpen(false)}
-        onReviewInForm={handleVoiceReviewInForm}
-      />
+        {isDiagramModalOpen && (
+          <PieceDiagramGeneratorModal
+            isOpen={isDiagramModalOpen}
+            onClose={() => setIsDiagramModalOpen(false)}
+            pieceInfo={diagramPieceInfo}
+          />
+        )}
 
-      <PieceDiagramGeneratorModal
-        isOpen={isDiagramModalOpen}
-        onClose={() => setIsDiagramModalOpen(false)}
-        pieceInfo={diagramPieceInfo}
-      />
+        {selectedMovementForDetail && (
+          <MovementDetailModal
+            movement={selectedMovementForDetail}
+            onClose={() => setSelectedMovementForDetail(null)}
+          />
+        )}
 
-      <MovementDetailModal
-        movement={selectedMovementForDetail}
-        onClose={() => setSelectedMovementForDetail(null)}
-      />
+        {isAuthModalOpen && (
+          <AuthModal
+            isOpen={isAuthModalOpen}
+            onClose={() => setIsAuthModalOpen(false)}
+            currentUser={currentUser}
+          />
+        )}
 
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        currentUser={currentUser}
-      />
+        {isThresholdsModalOpen && (
+          <StockThresholdsModal
+            isOpen={isThresholdsModalOpen}
+            onClose={() => setIsThresholdsModalOpen(false)}
+            currentUser={currentUser}
+            inventoryItems={inventoryItems}
+            onThresholdsUpdated={loadData}
+          />
+        )}
 
-      <StockThresholdsModal
-        isOpen={isThresholdsModalOpen}
-        onClose={() => setIsThresholdsModalOpen(false)}
-        currentUser={currentUser}
-        inventoryItems={inventoryItems}
-        onThresholdsUpdated={loadData}
-      />
+        {isIntegrityModalOpen && (
+          <IntegrityCheckModal
+            isOpen={isIntegrityModalOpen}
+            onClose={() => setIsIntegrityModalOpen(false)}
+            currentUser={currentUser}
+            onDataReconciled={loadData}
+            showToast={showToast}
+          />
+        )}
 
-      <IntegrityCheckModal
-        isOpen={isIntegrityModalOpen}
-        onClose={() => setIsIntegrityModalOpen(false)}
-        currentUser={currentUser}
-        onDataReconciled={loadData}
-        showToast={showToast}
-      />
+        {isUserManagementModalOpen && (
+          <UserManagementModal
+            isOpen={isUserManagementModalOpen}
+            onClose={() => setIsUserManagementModalOpen(false)}
+            currentUser={currentUser}
+          />
+        )}
 
-      <UserManagementModal
-        isOpen={isUserManagementModalOpen}
-        onClose={() => setIsUserManagementModalOpen(false)}
-        currentUser={currentUser}
-      />
+        {isOnboardingOpen && (
+          <OnboardingModal
+            isOpen={isOnboardingOpen}
+            onClose={() => setIsOnboardingOpen(false)}
+            onOpenVoiceAssistant={() => guardAuditor(() => setIsVoiceModalOpen(true))}
+            onOpenIntegrityCheck={() => setIsIntegrityModalOpen(true)}
+            onNavigateToInventory={() => setActiveTab('inventario')}
+            onOpenThresholdsModal={() => setIsThresholdsModalOpen(true)}
+          />
+        )}
 
-      <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
-        onOpenVoiceAssistant={() => guardAuditor(() => setIsVoiceModalOpen(true))}
-        onOpenIntegrityCheck={() => setIsIntegrityModalOpen(true)}
-        onNavigateToInventory={() => setActiveTab('inventario')}
-        onOpenThresholdsModal={() => setIsThresholdsModalOpen(true)}
-      />
-
-      <ConversationalAgentWidget
-        onNavigateToTab={(tab) => setActiveTab(tab)}
-        onOpenVoiceMovementModal={() => guardAuditor(() => setIsVoiceModalOpen(true))}
-        onOpenThresholdsModal={() => setIsThresholdsModalOpen(true)}
-        onOpenNewMovement={(tipo) => handleOpenNewMovement(tipo)}
-      />
+        <ConversationalAgentWidget
+          onNavigateToTab={(tab) => setActiveTab(tab)}
+          onOpenVoiceMovementModal={() => guardAuditor(() => setIsVoiceModalOpen(true))}
+          onOpenThresholdsModal={() => setIsThresholdsModalOpen(true)}
+          onOpenNewMovement={(tipo) => handleOpenNewMovement(tipo)}
+        />
+      </Suspense>
     </div>
   );
 }

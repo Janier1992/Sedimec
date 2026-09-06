@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { 
   ArrowDownLeft, 
   ArrowUpRight, 
@@ -17,7 +17,9 @@ import {
 } from 'lucide-react';
 import { KpiMetrics, Movimiento, ItemInventario, UserProfile } from '../types';
 import { exportarInventarioConsolidadoExcel, exportarMovimientosExcel } from '../utils/excel';
-import { MovementsTrendChart } from './MovementsTrendChart';
+// recharts es una dependencia pesada; se separa en su propio chunk y solo se
+// descarga cuando el usuario realmente ve el Dashboard.
+const MovementsTrendChart = lazy(() => import('./MovementsTrendChart').then((m) => ({ default: m.MovementsTrendChart })));
 
 interface DashboardViewProps {
   kpis: KpiMetrics | null;
@@ -272,11 +274,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </div>
 
       {/* ── GRÁFICO DE LÍNEAS RECHARTS: TENDENCIA 7 DÍAS (ENTRADAS VS SALIDAS) ── */}
-      <MovementsTrendChart
-        movements={recentMovements}
-        kpis={kpis}
-        onOpenNewMovement={onOpenNewMovement}
-      />
+      <Suspense fallback={<div className="h-[340px] rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 animate-pulse" />}>
+        <MovementsTrendChart
+          movements={recentMovements}
+          kpis={kpis}
+          onOpenNewMovement={onOpenNewMovement}
+        />
+      </Suspense>
 
       {/* ── DISTRIBUCIÓN DE EXISTENCIAS Y ALERTAS DE STOCK ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">

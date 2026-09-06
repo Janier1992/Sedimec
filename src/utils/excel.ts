@@ -1,4 +1,3 @@
-import * as XLSX from 'xlsx';
 import { Movimiento, ItemInventario } from '../types';
 
 /**
@@ -33,11 +32,12 @@ export function buildMovimientosRows(movimientos: Movimiento[]) {
   }));
 }
 
-export function exportarMovimientosExcel(
+export async function exportarMovimientosExcel(
   movimientos: Movimiento[],
   formato: 'xlsx' | 'csv' = 'xlsx',
   nombreArchivo: string = 'Sedimec_Movimientos'
 ) {
+  const XLSX = await import('xlsx');
   const rows = buildMovimientosRows(movimientos);
   const worksheet = XLSX.utils.json_to_sheet(rows);
 
@@ -103,10 +103,11 @@ export function buildInventarioRows(items: ItemInventario[]) {
   }));
 }
 
-export function exportarInventarioConsolidadoExcel(
+export async function exportarInventarioConsolidadoExcel(
   items: ItemInventario[],
   formato: 'xlsx' | 'csv' = 'xlsx'
 ) {
+  const XLSX = await import('xlsx');
   const rows = buildInventarioRows(items);
   const worksheet = XLSX.utils.json_to_sheet(rows);
   const workbook = XLSX.utils.book_new();

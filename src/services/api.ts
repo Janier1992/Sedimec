@@ -564,7 +564,7 @@ export async function reconcileIntegrity(): Promise<ReconcileResult> {
 export async function fetchUsers(): Promise<UserProfile[]> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, nombre, email, rol, cargo, avatarUrl:avatar_url')
+    .select('id, nombre, email, rol, cargo, avatarUrl:avatar_url, estado')
     .order('nombre');
   if (error) throw new Error(error.message || 'Error al consultar usuarios');
   return (data ?? []) as UserProfile[];
@@ -587,4 +587,22 @@ export async function updateUserRole(userId: string, rol: UserRole): Promise<voi
 
 export async function deleteUser(userId: string): Promise<{ success: boolean; mensaje: string }> {
   return invokeFn('admin-delete-user', { userId });
+}
+
+// Autoservicio de registro (sin sesión): crea la cuenta ya confirmada
+// (sin correo) pero 'pendiente' de aprobación -- ver Edge Function
+// request-access y el trigger handle_new_user.
+export async function requestAccess(payload: {
+  email: string;
+  password: string;
+  nombre: string;
+}): Promise<{ success: boolean; mensaje: string }> {
+  return invokeFn('request-access', payload);
+}
+
+// Aprobar una solicitud pendiente: solo un Administrador puede lograrlo
+// (reforzado por el trigger prevent_estado_self_approval en la base de datos).
+export async function approveUserRequest(userId: string, rol: UserRole): Promise<void> {
+  const { error } = await supabase.from('profiles').update({ estado: 'aprobado', rol }).eq('id', userId);
+  if (error) throw new Error(error.message || 'Error al aprobar la solicitud de acceso');
 }

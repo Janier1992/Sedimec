@@ -440,3 +440,6 @@ verify_jwt = false
 
 [functions.admin-delete-user]
 verify_jwt = false
+
+[functions.request-access]
+verify_jwt = false

@@ -130,7 +130,7 @@ export default function App() {
     }
     supabase
       .from('profiles')
-      .select('id, nombre, email, rol, cargo, avatar_url')
+      .select('id, nombre, email, rol, cargo, avatar_url, estado')
       .eq('id', session.user.id)
       .single()
       .then(({ data, error }) => {
@@ -149,6 +149,7 @@ export default function App() {
           rol: data.rol,
           cargo: data.cargo,
           avatarUrl: data.avatar_url,
+          estado: data.estado,
         });
       });
   }, [session?.user?.id]);
@@ -178,7 +179,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && currentUser.estado === 'aprobado') {
       loadData();
     }
   }, [currentUser, loadData]);
@@ -189,7 +190,7 @@ export default function App() {
   // de que el usuario tenga que recargar la página manualmente.
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && currentUser) {
+      if (document.visibilityState === 'visible' && currentUser?.estado === 'aprobado') {
         supabase.auth.refreshSession().finally(() => loadData());
       }
     };
@@ -381,6 +382,31 @@ export default function App() {
             className="w-full px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
           >
             Cerrar sesión e intentar de nuevo
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (session && currentUser && currentUser.estado !== 'aprobado') {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+        <div className="max-w-sm w-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 text-center space-y-4">
+          <div className="p-3 bg-amber-100 dark:bg-amber-950/60 text-amber-600 rounded-2xl inline-flex mx-auto">
+            <AlertCircle className="h-7 w-7" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white">Cuenta pendiente de aprobación</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Tu solicitud de acceso a Sedimec fue registrada. Un Administrador debe aprobarla antes de que puedas
+              usar el sistema. Vuelve a intentar más tarde.
+            </p>
+          </div>
+          <button
+            onClick={() => supabase.auth.signOut()}
+            className="w-full px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+          >
+            Cerrar sesión
           </button>
         </div>
       </div>

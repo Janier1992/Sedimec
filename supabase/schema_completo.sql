@@ -13,6 +13,9 @@
 --   supabase/migrations/0003_rls_and_roles.sql
 --   supabase/migrations/0004_movimiento_rules.sql
 --   supabase/migrations/0005_integrity_engine.sql
+--   supabase/migrations/0006_storage.sql
+--   supabase/migrations/0007_user_deletion_safety.sql
+--   supabase/migrations/0008_solicitudes_acceso.sql
 -- ============================================================
 
 
@@ -37,11 +40,16 @@ create table public.profiles (
   rol           public.user_role not null default 'operador',
   cargo         text,
   avatar_url    text,
+  -- 'pendiente': autorregistro vía request-access, esperando aprobación de un
+  -- Administrador. 'aprobado': puede usar el sistema (get_user_role() solo
+  -- resuelve un rol para cuentas aprobadas -- RLS bloquea todo lo demás).
+  estado        text not null default 'aprobado' check (estado in ('pendiente', 'aprobado')),
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );
 
 create index idx_profiles_rol on public.profiles(rol);
+create index idx_profiles_estado on public.profiles(estado);
 
 -- ============================================================
 -- movimientos (libro mayor, fuente de verdad del inventario)
@@ -243,22 +251,25 @@ group by
 create or replace function public.get_user_role()
 returns public.user_role
 language sql stable security definer set search_path = public
-as $$ select rol from public.profiles where id = auth.uid() $$;
+as $$ select rol from public.profiles where id = auth.uid() and estado = 'aprobado' $$;
 
 -- ============================================================
--- Alta automática de perfil al registrarse (siempre 'operador';
--- el primer admin se promueve manualmente por SQL, ver seed.sql)
+-- Alta automática de perfil al registrarse. Si viene de request-access
+-- (autoservicio, raw_user_meta_data->>'self_registered' = 'true') nace
+-- 'pendiente'; si la crea un Administrador (admin-create-user) nace
+-- 'aprobado'. El primer admin se promueve manualmente por SQL, ver seed.sql.
 -- ============================================================
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, nombre, email, rol, cargo)
+  insert into public.profiles (id, nombre, email, rol, cargo, estado)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'nombre', split_part(new.email, '@', 1)),
     new.email,
     'operador',
-    coalesce(new.raw_user_meta_data->>'cargo', 'Operador de Patio')
+    coalesce(new.raw_user_meta_data->>'cargo', 'Operador de Patio'),
+    case when new.raw_user_meta_data->>'self_registered' = 'true' then 'pendiente' else 'aprobado' end
   );
   return new;
 end;
@@ -269,12 +280,15 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- ============================================================
--- Nadie puede auto-promoverse de rol
+-- Nadie puede auto-promoverse de rol ni auto-aprobarse el acceso.
+-- "is distinct from" (no "<>"): con get_user_role() devolviendo NULL
+-- para cuentas pendientes, "NULL <> 'admin'" es NULL (falso), y el
+-- trigger dejaría pasar el cambio sin querer.
 -- ============================================================
 create or replace function public.prevent_role_self_escalation()
 returns trigger language plpgsql as $$
 begin
-  if new.rol <> old.rol and public.get_user_role() <> 'admin' then
+  if new.rol <> old.rol and public.get_user_role() is distinct from 'admin' then
     raise exception 'Solo un Administrador puede cambiar el rol de un usuario.';
   end if;
   return new;
@@ -284,6 +298,20 @@ $$;
 create trigger trg_prevent_role_self_escalation
   before update on public.profiles
   for each row execute function public.prevent_role_self_escalation();
+
+create or replace function public.prevent_estado_self_approval()
+returns trigger language plpgsql as $$
+begin
+  if new.estado <> old.estado and public.get_user_role() is distinct from 'admin' then
+    raise exception 'Solo un Administrador puede aprobar el acceso de una cuenta.';
+  end if;
+  return new;
+end;
+$$;
+
+create trigger trg_prevent_estado_self_approval
+  before update on public.profiles
+  for each row execute function public.prevent_estado_self_approval();
 
 -- ============================================================
 -- Inmutabilidad del libro de movimientos: un UPDATE solo puede
@@ -319,18 +347,21 @@ alter table public.umbrales_stock enable row level security;
 alter table public.alertas_stock_email enable row level security;
 alter table public.notification_settings enable row level security;
 
--- profiles: lectura abierta a autenticados (se necesita para mostrar responsables/creadores)
+-- profiles: una cuenta pendiente solo lee su propia fila (para saber que está
+-- pendiente); una cuenta aprobada lee todas (se necesita para mostrar
+-- responsables/creadores)
 create policy "profiles_select_all" on public.profiles
-  for select to authenticated using (true);
+  for select to authenticated
+  using (auth.uid() = id or public.get_user_role() is not null);
 create policy "profiles_update_self_or_admin" on public.profiles
   for update to authenticated
   using (auth.uid() = id or public.get_user_role() = 'admin')
   with check (auth.uid() = id or public.get_user_role() = 'admin');
 -- sin policy de insert/delete para 'authenticated' -> el único alta es el trigger security definer
 
--- movimientos: lectura total; insertar admin/operador; anular (update) solo admin; NUNCA delete físico
+-- movimientos: lectura solo para cuentas aprobadas; insertar admin/operador; anular (update) solo admin; NUNCA delete físico
 create policy "movimientos_select_all" on public.movimientos
-  for select to authenticated using (true);
+  for select to authenticated using (public.get_user_role() is not null);
 create policy "movimientos_insert_admin_operador" on public.movimientos
   for insert to authenticated
   with check (public.get_user_role() in ('admin','operador') and creado_por = auth.uid());
@@ -339,21 +370,21 @@ create policy "movimientos_update_admin" on public.movimientos
   using (public.get_user_role() = 'admin')
   with check (public.get_user_role() = 'admin');
 
--- umbrales_stock: lectura total, escritura solo admin
+-- umbrales_stock: lectura solo para cuentas aprobadas, escritura solo admin
 create policy "umbrales_select_all" on public.umbrales_stock
-  for select to authenticated using (true);
+  for select to authenticated using (public.get_user_role() is not null);
 create policy "umbrales_write_admin" on public.umbrales_stock
   for all to authenticated
   using (public.get_user_role() = 'admin')
   with check (public.get_user_role() = 'admin');
 
--- alertas_stock_email: lectura total; la escritura la hace únicamente la Edge Function con service_role
+-- alertas_stock_email: lectura solo para cuentas aprobadas; la escritura la hace únicamente la Edge Function con service_role
 create policy "alertas_select_all" on public.alertas_stock_email
-  for select to authenticated using (true);
+  for select to authenticated using (public.get_user_role() is not null);
 
--- notification_settings: lectura total, escritura solo admin
+-- notification_settings: lectura solo para cuentas aprobadas, escritura solo admin
 create policy "notif_select_all" on public.notification_settings
-  for select to authenticated using (true);
+  for select to authenticated using (public.get_user_role() is not null);
 create policy "notif_update_admin" on public.notification_settings
   for update to authenticated
   using (public.get_user_role() = 'admin')
@@ -619,7 +650,7 @@ declare
   v_total_corregidos int;
   v_after jsonb;
 begin
-  if public.get_user_role() <> 'admin' then
+  if public.get_user_role() is distinct from 'admin' then
     raise exception 'Acceso Denegado (RBAC): Solo los administradores tienen autorización para ejecutar la conciliación de inventario.';
   end if;
 
@@ -668,7 +699,7 @@ declare
   v_mov public.movimientos;
   v_saldo_min_posterior int;
 begin
-  if public.get_user_role() <> 'admin' then
+  if public.get_user_role() is distinct from 'admin' then
     raise exception 'Acceso Denegado (RBAC): Solo los usuarios con rol Administrador pueden anular movimientos.';
   end if;
 

@@ -16,7 +16,8 @@ import {
   Sun,
   Moon,
   ShieldCheck,
-  Users
+  Users,
+  ExternalLink
 } from 'lucide-react';
 import { UserProfile } from '../types';
 import { useTheme } from '../context/ThemeContext';
@@ -290,6 +291,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
                 {showExpanded && <span className="text-left flex-1 truncate">Gestión de Usuarios</span>}
               </button>
+            )}
+
+            {/* Portal de Administración (solo Administrador): pantalla independiente en /admin */}
+            {isAdminUser && (
+              <a
+                href="/admin"
+                target="_blank"
+                rel="noopener noreferrer"
+                title={!showExpanded ? 'Portal de Administración' : undefined}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-all cursor-pointer group"
+              >
+                <div className="p-1 rounded-lg bg-slate-800 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </div>
+                {showExpanded && <span className="text-left flex-1 truncate">Administración</span>}
+              </a>
             )}
           </div>
         </div>

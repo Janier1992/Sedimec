@@ -97,6 +97,7 @@ npx supabase functions deploy generate-diagram-image
 npx supabase functions deploy send-stock-alert-email
 npx supabase functions deploy admin-create-user
 npx supabase functions deploy admin-delete-user
+npx supabase functions deploy request-access
 ```
 
 Luego configura los secrets (nunca van en el `.env` del cliente, solo aquí):
@@ -183,11 +184,18 @@ Puntos clave del diseño (ver `supabase/schema_completo.sql` para el detalle):
 
 ---
 
-## Limitaciones conocidas
+## Solicitudes de acceso y Portal de Administración
 
-- **Correo de confirmación de cuenta (autorregistro) usa el remitente gratuito integrado de Supabase Auth.** Este remitente tiene un límite de frecuencia muy bajo (pensado por Supabase solo para pruebas, no para producción) y no se puede aumentar sin conectar un proveedor SMTP propio, sin importar el plan de Supabase. Con varios registros seguidos, los siguientes fallarán con "Se ha superado el límite de frecuencia de correo electrónico" hasta que el límite se reinicie.
-  - **Antes de usarlo con usuarios reales**, conecta un proveedor SMTP en el dashboard de Supabase: **Authentication → Emails → SMTP Settings** (distinto de los secrets `RESEND_API_KEY`/`SMTP_*` de arriba, que son solo para las alertas de stock bajo). Cualquier proveedor transaccional sirve (Resend, SendGrid, Amazon SES, Postmark, etc.); la mayoría tiene plan gratuito suficiente para un equipo pequeño.
-  - Mientras no se configure, el registro desde el login sigue siendo funcional para pruebas ocasionales, pero no es apto para altas de usuarios en producción.
+El autorregistro desde el login **ya no depende del correo de Supabase** (su remitente gratuito tiene un límite de envío muy bajo, pensado solo para pruebas). Ahora funciona así:
+
+1. Un visitante hace clic en "Regístrate aquí" en el login y completa nombre, correo y contraseña.
+2. Esto llama a la Edge Function pública `request-access`, que crea la cuenta ya confirmada (sin enviar correo) pero en estado **`pendiente`** — no puede iniciar sesión todavía.
+3. Un Administrador entra a **Administración** (enlace en el menú lateral, se abre en `/admin` con su propio login) o a **Gestión de Usuarios**, ve la solicitud en la sección "Solicitudes de Acceso Pendientes", elige su rol y hace clic en **Aprobar** (o **Rechazar**, que elimina la cuenta).
+4. Aprobada la cuenta, el usuario ya puede iniciar sesión con normalidad.
+
+Esto se refuerza en la base de datos, no solo en la UI: `get_user_role()` únicamente devuelve un rol para cuentas con `estado = 'aprobado'`, y todas las políticas RLS de lectura exigen ese rol -- una cuenta pendiente no puede leer ni escribir nada aunque tenga una sesión válida.
+
+`/admin` es una pantalla completamente separada de la aplicación operativa (propio login, aunque comparte la misma sesión de Supabase), pensada para que la administración del sistema no viva mezclada con el uso diario del inventario.
 
 ---
 

@@ -82,6 +82,8 @@ export interface AlertaStockEmail {
   mensajeDetallado: string;
 }
 
+export type UserEstado = 'pendiente' | 'aprobado';
+
 export interface UserProfile {
   id: string;
   nombre: string;
@@ -89,6 +91,7 @@ export interface UserProfile {
   rol: UserRole;
   cargo: string;
   avatarUrl?: string;
+  estado?: UserEstado;
 }
 
 export interface KpiMetrics {

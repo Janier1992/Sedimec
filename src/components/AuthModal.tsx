@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, LogOut, Mail, Lock, AlertCircle, LogIn, User, UserPlus, MailCheck } from 'lucide-react';
+import { X, ShieldCheck, LogOut, Mail, Lock, AlertCircle, LogIn, User, UserPlus, Clock } from 'lucide-react';
 import { UserProfile } from '../types';
 import { supabase } from '../lib/supabaseClient';
+import { requestAccess } from '../services/api';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -23,7 +24,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [signupSentTo, setSignupSentTo] = useState<string | null>(null);
+  const [requestSent, setRequestSent] = useState(false);
 
   if (!isOpen) return null;
 
@@ -38,13 +39,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
   const switchMode = (next: 'login' | 'signup') => {
     setMode(next);
     setError(null);
-    setSignupSentTo(null);
+    setRequestSent(false);
   };
 
   const handleClose = () => {
     resetFields();
     setMode('login');
-    setSignupSentTo(null);
+    setRequestSent(false);
     onClose();
   };
 
@@ -83,37 +84,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
 
     setIsSubmitting(true);
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { nombre: nombre.trim() },
-          emailRedirectTo: window.location.origin,
-        },
-      });
-      if (signUpError) throw signUpError;
-
-      if (data.session) {
-        // Confirmación de correo deshabilitada en el proyecto: ya quedó con sesión activa.
-        resetFields();
-        onClose();
-        return;
-      }
-
-      setSignupSentTo(email);
+      await requestAccess({ email: email.trim(), password, nombre: nombre.trim() });
+      setRequestSent(true);
       resetFields();
     } catch (err: unknown) {
-      const code = (err as { code?: string } | null)?.code;
-      const msg = err instanceof Error ? err.message : 'No se pudo crear la cuenta.';
-      if (code === 'over_email_send_rate_limit') {
-        setError(
-          'Se alcanzó el límite temporal de correos de confirmación. Espera unos minutos e intenta de nuevo, o pide a un Administrador que te cree la cuenta directamente desde "Gestión de Usuarios" (no requiere correo).'
-        );
-      } else if (code === 'user_already_exists' || code === 'email_exists' || /already registered|already exists/i.test(msg)) {
-        setError('Ya existe una cuenta registrada con este correo. Inicia sesión en vez de registrarte.');
-      } else {
-        setError(msg);
-      }
+      const msg = err instanceof Error ? err.message : 'No se pudo enviar la solicitud de acceso.';
+      setError(
+        /ya existe una cuenta/i.test(msg)
+          ? 'Ya existe una cuenta registrada con este correo. Inicia sesión en vez de solicitar acceso.'
+          : msg
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -187,16 +167,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, currentUs
                 <span>Cerrar Sesión</span>
               </button>
             </>
-          ) : signupSentTo ? (
+          ) : requestSent ? (
             <div className="text-center py-2 space-y-3">
-              <div className="mx-auto h-12 w-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
-                <MailCheck className="h-6 w-6" />
+              <div className="mx-auto h-12 w-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                <Clock className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Revisa tu correo</h3>
+                <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Solicitud enviada</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
-                  Enviamos un enlace de confirmación a <strong className="text-slate-700 dark:text-slate-300">{signupSentTo}</strong>.
-                  Haz clic en el enlace para activar tu cuenta y poder ingresar.
+                  Tu cuenta quedó registrada y <strong className="text-slate-700 dark:text-slate-300">pendiente de aprobación</strong>.
+                  Un Administrador debe revisar y aprobar tu solicitud antes de que puedas iniciar sesión.
                 </p>
               </div>
               <button
